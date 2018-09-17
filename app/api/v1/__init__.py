@@ -1,3 +1,3 @@
-from .views import app, api, Orders
+from .views import app, api, OrderManipulation
 
-api.add_resource(Orders, '/api/v1/orders/<int:identifier>')
+api.add_resource(OrderManipulation, '/api/v1/orders/<int:identifier>')
