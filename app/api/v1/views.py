@@ -13,23 +13,31 @@ api = Api(app)
 db = Database()
 
 orders = db.get_orders()
-class OrderManipulation(Resource):
-    def get(self, identifier):
 
-        order = [order for order in orders if order['id'] == identifier]
+class Orders(Resource):
+    def post(self):
+        request_data = request.json()
 
-        if len(order) == 0:
-            return (
-                {
-                    "message":"Order of that id not found"
-                }
-            ), 404
-        
+        new_order = {
+            'id': len(orders) + 1,
+            'username':request_data['username'],
+            'products':{
+                "name":request_data['products']['name'],
+                "qty":request_data['products']['qty'],
+                "price":request_data['products']['price']
+            },
+            'status':False,
+            'ordered_date':str(datetime.datetime.now()),
+            'delivered_date':None
+        }
+
+        orders.append(new_order)
+
         return (
             {
-                "message":"Success",
-                "order":order
+                "message":"Successfull order",
+                "order":new_order
             }
-        )
+        ), 201
 
-        
+    
