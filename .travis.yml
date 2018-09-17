@@ -10,4 +10,7 @@ install:
   - pip install -r requirements.txt
 
 script:
-  - pytest -v test
+  - coverage run --source app/test -m pytest -v 
+
+after_success:
+  - coveralls

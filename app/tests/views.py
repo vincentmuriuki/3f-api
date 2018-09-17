@@ -19,3 +19,9 @@ class Orders(Resource):
                 "orders":orders
             }            
         ), 201
+
+
+api.add_resource(Orders, '/api/v1/orders')
+
+if __name__ == "__main__":
+    app.run(debug=True)
