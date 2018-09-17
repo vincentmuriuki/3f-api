@@ -16,7 +16,7 @@ orders = db.get_orders()
 
 class Orders(Resource):
     def post(self):
-        request_data = request.json()
+        request_data = request.get_json()
 
         new_order = {
             'id': len(orders) + 1,
@@ -31,6 +31,13 @@ class Orders(Resource):
             'delivered_date':None
         }
 
+        if not request_data['username'] or not request_data['products'] or not request_data:
+            return (
+                {
+                    "message":"Oops missing field, Try again"
+                }
+            ), 400
+
         orders.append(new_order)
 
         return (
@@ -39,5 +46,7 @@ class Orders(Resource):
                 "order":new_order
             }
         ), 201
+
+    api.add_resource(Orders, '/api/v1/orders')
 
     
