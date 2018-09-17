@@ -47,6 +47,6 @@ class Orders(Resource):
             }
         ), 201
 
-    api.add_resource(Orders, '/api/v1/orders')
+api.add_resource(Orders, '/api/v1/orders')
 
     
