@@ -18,9 +18,9 @@ class TestFlaskApi(unittest.TestCase):
 
         self.order_id = 1
 
-    def test_get_orders(self):
+    def test_get_specific_order(self):
         response = self.app.get(
-            '/api/v1/orders',
+            '/api/v1/orders/{}'.format(self.order_id),
             content_type="application/json"
         )
 

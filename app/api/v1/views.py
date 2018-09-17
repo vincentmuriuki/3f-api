@@ -13,18 +13,23 @@ api = Api(app)
 db = Database()
 
 orders = db.get_orders()
-class Orders(Resource):
-    def get(self):
-        
-        if len(orders) == 0:
-            return ({
-                "message":"No orders yet"
-            }),200
+class OrderManipulation(Resource):
+    def get(self, identifier):
 
+        order = [order for order in orders if order['id'] == identifier]
+
+        if len(order) == 0:
+            return (
+                {
+                    "message":"Order of that id not found"
+                }
+            ), 404
+        
         return (
             {
-                "orders":orders
-            }            
-        ), 200
+                "message":"Success",
+                "order":order
+            }
+        )
 
-
+        
