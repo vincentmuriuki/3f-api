@@ -1,5 +1,5 @@
 import unittest
-from views import app
+from api.v1.views import app
 
 class TestFlaskApi(unittest.TestCase):
 
