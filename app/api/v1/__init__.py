@@ -1,1 +1,1 @@
-from .views import app, api, Orders
+from .views import app, api, OrdersManipulation
