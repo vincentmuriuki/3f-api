@@ -15,7 +15,7 @@ db = Database()
 orders = db.get_orders()
 
 class OrdersManipulation(Resource):
-    def delete(self, identifier):
+    def put(self, identifier):
         pass
 
 api.add_resource(OrdersManipulation, '/api/v1/orders/<int:identifier>')
