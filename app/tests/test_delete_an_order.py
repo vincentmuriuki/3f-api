@@ -1,5 +1,6 @@
 import unittest
-from api.v1.views import app
+from api.v1 import app
+import json
 
 class TestFlaskApi(unittest.TestCase):
 
@@ -18,16 +19,14 @@ class TestFlaskApi(unittest.TestCase):
 
         self.order_id = 1
 
-    def test_get_specific_order(self):
-        response = self.app.get(
-            '/api/v1/orders/{}'.format(self.order_id),
-            content_type="application/json"
-        )
+    def test_delete_order(self):
+        """ Testing to check is a single order can be retrieved """
+        res =self.app.delete('/api/v1/orders/{}/'.format(self.order_id), content_type='application/json')
 
-        if response.status_code == 404:
-            self.assertEqual(response.status_code, 404)
+        if res.status_code == 404:
+            self.assertEqual(res.status_code, 404)
         else:
-            self.assertEqual(response.status_code, 200)
+            self.assertEqual(res.status_code, 204)
 
 
 if __name__ == "__main__":

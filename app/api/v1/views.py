@@ -13,23 +13,24 @@ api = Api(app)
 db = Database()
 
 orders = db.get_orders()
-class OrderManipulation(Resource):
-    def get(self, identifier):
 
+class OrdersManipulation(Resource):
+    def delete(self, identifier):
         order = [order for order in orders if order['id'] == identifier]
-
         if len(order) == 0:
             return (
                 {
-                    "message":"Order of that id not found"
+                    "message":"Order of the id not found"
                 }
             ), 404
-        
-        return (
-            {
-                "message":"Success",
-                "order":order
-            }
-        )
+        else:
+            order.remove(order[0])
+            return (
+                {
+                    "message":"Success, order deleted"
+                }
+            ), 204
 
-        
+api.add_resource(OrdersManipulation, '/api/v1/orders/<int:identifier>')
+
+    
