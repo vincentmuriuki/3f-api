@@ -118,6 +118,12 @@ class OrdersManipulation(Resource):
                 }
             ), 204
 
+class LandingPage(Resource):
+
+    def get(self):
+        return "Hi there, Welcome! visit my github develop branch read the readme file to test your apis. <a href='https://github/tesh254/3f-api.git'>Click here</a>"
+
+api.add_resource(LandingPage, '/')
 api.add_resource(Orders, '/api/v1/orders')
 api.add_resource(OrdersManipulation, '/api/v1/orders/<int:identifier>')
 
