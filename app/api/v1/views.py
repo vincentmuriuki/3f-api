@@ -16,7 +16,8 @@ orders = db.get_orders()
 
 class OrdersManipulation(Resource):
     def put(self, identifier):
-      order = [order for order in orders if order['id'] == identifier]
+        
+        order = [order for order in orders if order['id'] == identifier]
         if len(order) == 0:
             return (
                 {
@@ -44,7 +45,7 @@ class OrdersManipulation(Resource):
                     'order': order[0]
                 }
             ), 201
-          
+
     def delete(self, identifier):
         order = [order for order in orders if order['id'] == identifier]
         if len(order) == 0:
