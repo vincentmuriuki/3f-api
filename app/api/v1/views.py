@@ -41,7 +41,10 @@ class Orders(Resource):
                 "name":data_json['products']['name'],
                 "qty":data_json['products']['qty'],
                 "price":data_json['products']['price']
-            }
+            },
+            "status":True,
+            "ordered_date":str(datetime.datetime.now()),
+            "delivered_date":None
         }
 
         orders.append(new_order)
@@ -85,7 +88,7 @@ class OrdersManipulation(Resource):
                   "message":"Missing a field"
                 }
             ), 400
-        elif 'status' in request.json and type(request.json['status']) != bool:
+        elif 'status' in request.json:
             return (
                 {
                     "message":"Missing a field"
@@ -93,7 +96,7 @@ class OrdersManipulation(Resource):
             ), 400
         else:
             order[0]['status'] = request.json.get('status', order[0]['status'])
-            order
+            order[0]['delivered_date'] = request.json.get(str(datetime.datetime.now()), order[0]['delivered_date'])
 
             return (
                 {
