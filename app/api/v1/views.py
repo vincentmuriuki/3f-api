@@ -14,7 +14,62 @@ db = Database()
 
 orders = db.get_orders()
 
+class Orders(Resource):
+    def get(self):
+
+        if len(orders) == 0:
+            return (
+                {
+                    "message":"No orders yet"
+                }
+            ), 200
+        else:
+            return (
+                {
+                    "orders":orders
+                }
+            ), 200
+
+    def post(self):
+
+        data_json = request.get_json()
+
+        new_order = {
+            "id":len(orders) + 1,
+            "username":data_json['username'],
+            "products":{
+                "name":data_json['products']['name'],
+                "qty":data_json['products']['qty'],
+                "price":data_json['products']['price']
+            }
+        }
+
+        orders.append(new_order)
+
+        return (
+            {
+                "message":"Success",
+                "order":new_order
+            }
+        ), 201
+
 class OrdersManipulation(Resource):
+    def get(self, identifier):
+
+        order =  [order for order in orders if order['id'] == identifier]
+        if len(order) == 0:
+            return (
+                {
+                    "message":"Order not found"
+                }
+            ), 404
+
+        else:
+            return (
+                {
+                    "message": "Success"
+                }
+            ), 200
     def put(self, identifier):
         
         order = [order for order in orders if order['id'] == identifier]
@@ -38,6 +93,7 @@ class OrdersManipulation(Resource):
             ), 400
         else:
             order[0]['status'] = request.json.get('status', order[0]['status'])
+            order
 
             return (
                 {
@@ -62,6 +118,7 @@ class OrdersManipulation(Resource):
                 }
             ), 204
 
+api.add_resource(Orders, '/api/v1/orders')
 api.add_resource(OrdersManipulation, '/api/v1/orders/<int:identifier>')
 
     
