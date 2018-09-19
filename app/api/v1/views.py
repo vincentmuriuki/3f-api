@@ -42,7 +42,7 @@ class Orders(Resource):
                 "qty":data_json['products']['qty'],
                 "price":data_json['products']['price']
             },
-            "status":True,
+            "status":"Pending",
             "ordered_date":str(datetime.datetime.now()),
             "delivered_date":None
         }
@@ -74,36 +74,20 @@ class OrdersManipulation(Resource):
                 }
             ), 200
     def put(self, identifier):
-        
         order = [order for order in orders if order['id'] == identifier]
-        if len(order) == 0:
-            return (
-                {
-                  "message":"Order of the identifier not found"
-                }
-            ), 404
-        elif not request.json:
-            return (
-                {
-                  "message":"Missing a field"
-                }
-            ), 400
-        elif 'status' in request.json:
-            return (
-                {
-                    "message":"Missing a field"
-                }
-            ), 400
-        else:
-            order[0]['status'] = request.json.get('status', order[0]['status'])
-            order[0]['delivered_date'] = request.json.get(str(datetime.datetime.now()), order[0]['delivered_date'])
 
+        if order:
+            order[0]['status'] = "Delivered"
             return (
                 {
-                    'message':'Order delivered',
-                    'order': order[0]
+                    "message":"Order has been delivered"
                 }
             ), 201
+        return(
+            {
+                "message":"Order not found"
+            }
+        ), 404
 
     def delete(self, identifier):
         order = [order for order in orders if order['id'] == identifier]
