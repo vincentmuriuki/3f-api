@@ -1,4 +1,8 @@
-from app.api.v1 import app
+import os
+from app import create_app
 
-if  __name__ == "__main__":
-    app.run(debug = True)
+
+app = create_app(os.getenv("CONFIG_TYPE") or "default")
+
+if __name__ == "__main__":
+    app.run(debug=True)

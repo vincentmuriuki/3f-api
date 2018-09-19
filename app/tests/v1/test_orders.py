@@ -1,12 +1,13 @@
 import unittest
-from api.v1 import app
+from app import create_app
 import json
 
 class TestFlaskApi(unittest.TestCase):
 
     def setUp(self):
 
-        self.app = app.test_client()
+        self.app = create_app("testing")
+        self.client = self.app.test_client()
 
         self.order_data = {
             "username":"Lewis Ngugi",
@@ -22,7 +23,7 @@ class TestFlaskApi(unittest.TestCase):
         self.order_id = 1   
 
     def test_delete_specific_order(self):
-        res = self.app.get(
+        res = self.client.get(
             '/api/v1/orders/{}'.format(self.order_id), 
             content_type='application/json'
         )
@@ -33,7 +34,7 @@ class TestFlaskApi(unittest.TestCase):
             self.assertEqual(res.status_code, 204)   
 
     def test_get_specific_order(self):
-        res = self.app.get(
+        res = self.client.get(
             '/api/v1/orders/{}'.format(self.order_id), 
             content_type='application/json'
         )
@@ -44,7 +45,7 @@ class TestFlaskApi(unittest.TestCase):
             self.assertEqual(res.status_code, 204) 
 
     def test_get_orders(self):
-        res = self.app.get(
+        res = self.client.get(
             '/api/v1/orders', 
             content_type='application/json'
         )
@@ -56,7 +57,7 @@ class TestFlaskApi(unittest.TestCase):
 
     def test_updating_order_status(self):
 
-        res = self.app.put(
+        res = self.client.put(
             '/api/v1/orders/{}'.format(self.order_id), 
             data = json.dumps(self.status),
             content_type='application/json'
@@ -70,7 +71,7 @@ class TestFlaskApi(unittest.TestCase):
     
 
     def test_place_an_order(self):
-        res = self.app.post(
+        res = self.client.post(
             '/api/v1/orders', 
             data = json.dumps(self.order_data), 
             content_type='application/json'

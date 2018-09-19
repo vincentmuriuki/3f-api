@@ -4,13 +4,13 @@ from flask_restful import Resource, Api
 import datetime
 
 #importing local modules
-from .models import Database
+from .models import OrdersOperation
 
 app = Flask(__name__)
 
 api = Api(app)
 
-db = Database()
+db = OrdersOperation()
 
 orders = db.get_orders()
 
@@ -59,14 +59,14 @@ class Orders(Resource):
 class OrdersManipulation(Resource):
     def get(self, identifier):
 
-        order =  [order for order in orders if order['id'] == identifier]
-        if len(order) == 0:
+        order = db.get_specific_order(identifier)
+
+        if order is None:
             return (
                 {
                     "message":"Order not found"
                 }
             ), 404
-
         else:
             return (
                 {
@@ -74,7 +74,7 @@ class OrdersManipulation(Resource):
                 }
             ), 200
     def put(self, identifier):
-        order = [order for order in orders if order['id'] == identifier]
+        order = db.get_specific_order(identifier)
 
         if order:
             order[0]['status'] = "Delivered"
@@ -90,15 +90,15 @@ class OrdersManipulation(Resource):
         ), 404
 
     def delete(self, identifier):
-        order = [order for order in orders if order['id'] == identifier]
-        if len(order) == 0:
+        order = db.get_specific_order(identifier)
+        if order is None:
             return (
                 {
                   "message":"Order of the id not found"
                 }
             ), 404
         else:
-            order.remove(order[0])
+            orders.remove(order)
             return (
                 {
                     "message":"Success, order deleted"
@@ -108,10 +108,8 @@ class OrdersManipulation(Resource):
 class LandingPage(Resource):
 
     def get(self):
-        return "Hi there, Welcome! visit my github develop branch read the readme file to test your apis. <a href='https://github/tesh254/3f-api.git'>Click here</a>"
+        return ""
 
-api.add_resource(LandingPage, '/')
-api.add_resource(Orders, '/api/v1/orders')
-api.add_resource(OrdersManipulation, '/api/v1/orders/<int:identifier>')
+
 
     
