@@ -2,6 +2,8 @@
 from flask import Flask, request, abort
 from flask_restful import Resource, Api
 import datetime
+import os
+import markdown
 
 #importing local modules
 from .models import OrdersOperation
@@ -23,17 +25,14 @@ class Orders(Resource):
                     "message":"No orders yet"
                 }
             ), 200
-        else:
-            return (
-                {
-                    "orders":orders
-                }
-            ), 200
+        return (
+            {
+                "orders":orders
+            }
+        ), 200
 
     def post(self):
-
         data_json = request.get_json()
-
         new_order = {
             "id":len(orders) + 1,
             "username":data_json['username'],
@@ -46,9 +45,7 @@ class Orders(Resource):
             "ordered_date":str(datetime.datetime.now()),
             "delivered_date":None
         }
-
         orders.append(new_order)
-
         return (
             {
                 "message":"Success",
@@ -58,7 +55,6 @@ class Orders(Resource):
 
 class OrdersManipulation(Resource):
     def get(self, identifier):
-
         order = db.get_specific_order(identifier)
 
         if order is None:
@@ -67,14 +63,13 @@ class OrdersManipulation(Resource):
                     "message":"Order not found"
                 }
             ), 404
-        else:
-            return (
-                {
-                    "message": "Success",
-                    "order":order
+        return (
+            {
+                "message": "Success",
+                "order":order
 
-                }
-            ), 200
+            }
+        ), 200
     def put(self, identifier):
         order = db.get_specific_order(identifier)
 
@@ -100,18 +95,17 @@ class OrdersManipulation(Resource):
                   "message":"Order of the id not found"
                 }
             ), 404
-        else:
-            orders.remove(order[0])
-            return (
-                {
-                    "message":"Success, order deleted"
-                }
-            ), 204
+        orders.remove(order[0])
+        return (
+            {
+                "message":"Success, order deleted"
+            }
+        ), 204
 
 class LandingPage(Resource):
+    def get(self):        
+        return """Copy this link to visit my git repo for the docs: https://github.com/tesh254/3f-api """
 
-    def get(self):
-        return ""
 
 
 

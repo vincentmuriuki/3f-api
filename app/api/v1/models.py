@@ -6,7 +6,12 @@ class OrdersOperation:
     def get_orders(self):
         return self.orders
 
-    def order(self, order_id, username, products, product_name, product_price, product_qty, status, ordered_date, delivered_date):
+    def order(
+            self, order_id, username, 
+            products, product_name, 
+            product_price, product_qty, 
+            status, ordered_date, delivered_date):
+            
         self.name = product_name,
         self.price = product_price
         self.qty = product_qty

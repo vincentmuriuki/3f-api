@@ -23,14 +23,16 @@ class TestFlaskApi(unittest.TestCase):
         self.order_id = 1   
 
     def test_delete_specific_order(self):
-        res = self.client.get(
+        res = self.client.delete(
             '/api/v1/orders/{}'.format(self.order_id), 
             content_type='application/json'
         )
 
         if res.status_code == 404:
+            # Test if an order is not found
             self.assertEqual(res.status_code, 404)
         else:
+            # Test if the order was successfully deleted
             self.assertEqual(res.status_code, 204)   
 
     def test_get_specific_order(self):
@@ -42,18 +44,14 @@ class TestFlaskApi(unittest.TestCase):
         if res.status_code == 404:
             self.assertEqual(res.status_code, 404)
         else:
-            self.assertEqual(res.status_code, 204) 
+            self.assertEqual(res.status_code, 200) 
 
     def test_get_orders(self):
         res = self.client.get(
             '/api/v1/orders', 
             content_type='application/json'
         )
-
-        if res.status_code == 404:
-            self.assertEqual(res.status_code, 404)
-        else:
-            self.assertEqual(res.status_code, 200)
+        self.assertEqual(res.status_code, 200)
 
     def test_updating_order_status(self):
 
@@ -78,7 +76,6 @@ class TestFlaskApi(unittest.TestCase):
         )
 
         self.assertEqual(res.status_code, 201)
-
 
 if __name__ == "__main__":
     unittest.main()
