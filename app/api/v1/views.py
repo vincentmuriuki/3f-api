@@ -12,9 +12,9 @@ app = Flask(__name__)
 
 api = Api(app)
 
-db = OrdersOperation()
+orders_models = OrdersOperation()
 
-orders = db.get_orders()
+orders = orders_models.get_orders()
 
 class Orders(Resource):
     def get(self):
@@ -53,9 +53,24 @@ class Orders(Resource):
             }
         ), 201
 
+    def delete(self):        
+        orders = orders_models.get_orders()
+        if len(orders) == 0:
+            return (
+                {
+                    "message":"No orders to delete"
+                }
+            ), 204
+        orders = []
+        return (
+            {
+                "message":"Orders deleted"
+            }
+        ), 204
+
 class OrdersManipulation(Resource):
     def get(self, identifier):
-        order = db.get_specific_order(identifier)
+        order = orders_models.get_specific_order(identifier)
 
         if order is None:
             return (
@@ -70,8 +85,9 @@ class OrdersManipulation(Resource):
 
             }
         ), 200
+
     def put(self, identifier):
-        order = db.get_specific_order(identifier)
+        order = orders_models.get_specific_order(identifier)
 
         if order:
             order[0]['status'] = "Delivered"
@@ -88,8 +104,8 @@ class OrdersManipulation(Resource):
         ), 404
 
     def delete(self, identifier):
-        order = db.get_specific_order(identifier)
-        if order is None:
+        order = orders_models.get_specific_order(identifier)
+        if not order:
             return (
                 {
                   "message":"Order of the id not found"

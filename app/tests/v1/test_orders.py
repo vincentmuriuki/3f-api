@@ -22,6 +22,14 @@ class TestFlaskApi(unittest.TestCase):
 
         self.order_id = 1   
 
+    def delete_all_orders(self):
+        res = self.client.delete(
+            '/api/v1/orders', 
+            content_type='application/json'
+        )
+
+        self.assertEqual(res.status_code, 204)
+
     def test_delete_specific_order(self):
         res = self.client.delete(
             '/api/v1/orders/{}'.format(self.order_id), 
