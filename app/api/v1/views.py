@@ -70,7 +70,9 @@ class OrdersManipulation(Resource):
         else:
             return (
                 {
-                    "message": "Success"
+                    "message": "Success",
+                    "order":order
+
                 }
             ), 200
     def put(self, identifier):
@@ -78,6 +80,7 @@ class OrdersManipulation(Resource):
 
         if order:
             order[0]['status'] = "Delivered"
+            order[0]['delivered_date'] = str(datetime.datetime.now())
             return (
                 {
                     "message":"Order has been delivered"
@@ -98,7 +101,7 @@ class OrdersManipulation(Resource):
                 }
             ), 404
         else:
-            orders.remove(order)
+            orders.remove(order[0])
             return (
                 {
                     "message":"Success, order deleted"
