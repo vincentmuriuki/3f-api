@@ -29,6 +29,7 @@ Open postman, and try this endpoints
 | `GET /api/v1/orders/<id>`|This api gets a specific order.
 | `POST /api/v1/orders`|This api creates a new order.
 | `PUT /api/v1/orders/<id>`|This api updates an order status.
+| `DELETE /api/v1/orders`|This deletes all orders 
 | `DELETE /api/v1/orders/<id>`|This api deletes an order.
 
 
@@ -100,4 +101,59 @@ By requesting an order of the id specified at the url, if there is an order the 
 
 ## PUT specific order by id
 
-By using this endpoint an responding with a json object of the order status 
+For a `201 Created` status one needs to respond to the server with a json object shown below:
+
+```json
+{
+    "status":"Delivered"
+}
+```
+
+If no json response then the server will throw a `400 Bad Request` meaning that it lacks that field.
+
+## DELETE specific order by id
+
+For a successful delete the user or admin is thrown a `204 No Content` if in the uri they specified the order to be deleted i.e.
+
+```handlebars
+{{url}}/api/v1/orders/1
+```
+
+where 1 represents a specific id.
+
+A `404 Not Found` error status is returned to the user or admin if the order of that id is not found.
+
+## DELETE all orders
+
+This api endpoint is used to clear the database of any orders in the users table or the admin table.
+
+It has an easy step set the http verb to delete on postman then visit this uri:
+
+```jinja
+{{url}}/api/v1/orders
+```
+
+Either way a `204 No content` status is sent back to the user for a successful delete or a no delete at all but if there are no orders to delete, the status will be sent to you and a json object with a message:
+
+
+```json
+{
+    "message":"No orders to delete"
+}
+```
+
+If there are any orders to delete then this is the json reponse:
+
+```json
+{
+    "message":"Orders successfully deleted"
+}
+```
+
+Remember this project is open source meaning contributions are highly appreciated, fork this repo and contirbute to this endpoints also do not forget to: 
+
+```html
+<learn, code and share}
+``` 
+
+**Peace Out**
