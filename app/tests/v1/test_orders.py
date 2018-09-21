@@ -8,7 +8,6 @@ class TestFlaskApi(unittest.TestCase):
 
         self.app = create_app("testing")
         self.client = self.app.test_client()
-
         self.order_data = {
             "username":"Lewis Ngugi",
             "products":{
@@ -17,12 +16,17 @@ class TestFlaskApi(unittest.TestCase):
                 "price":5
             }
         }
-
         self.status = 'delivered'
-
         self.order_id = 1   
 
-    def delete_all_orders(self):
+    def post_data(self, path='/api/v1/orders', data_dict={}):
+        data_dict = self.order_data
+        result = self.client.post(path, data=json.dumps(data_dict), content_type = "application/json")
+
+        return result
+
+
+    def test_delete_all_orders(self):
         res = self.client.delete(
             '/api/v1/orders', 
             content_type='application/json'
@@ -77,11 +81,7 @@ class TestFlaskApi(unittest.TestCase):
     
 
     def test_place_an_order(self):
-        res = self.client.post(
-            '/api/v1/orders', 
-            data = json.dumps(self.order_data), 
-            content_type='application/json'
-        )
+        res = self.post_data()
 
         self.assertEqual(res.status_code, 201)
 
