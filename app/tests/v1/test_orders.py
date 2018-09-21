@@ -10,11 +10,8 @@ class TestFlaskApi(unittest.TestCase):
         self.client = self.app.test_client()
         self.order_data = {
             "username":"Lewis Ngugi",
-            "products":{
-                "name":"Chips Bhajia",
-                "qty":5,
-                "price":5
-            }
+            "product_name":"Chips Bhajia",
+            "product_price":"500"
         }
         self.status = 'delivered'
         self.order_id = 1   

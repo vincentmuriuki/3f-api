@@ -32,20 +32,7 @@ class Orders(Resource):
         ), 200
 
     def post(self):
-        data_json = request.get_json()
-        new_order = {
-            "id":len(orders) + 1,
-            "username":data_json['username'],
-            "products":{
-                "name":data_json['products']['name'],
-                "qty":data_json['products']['qty'],
-                "price":data_json['products']['price']
-            },
-            "status":"Pending",
-            "ordered_date":str(datetime.datetime.now()),
-            "delivered_date":None
-        }
-        orders.append(new_order)
+        new_order = orders_models.save_order()
         return (
             {
                 "message":"Success",
