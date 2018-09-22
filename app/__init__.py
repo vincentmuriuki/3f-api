@@ -2,13 +2,13 @@ from flask import Flask, Blueprint
 from flask_restful import Api
 
 # Local Import
-from instance import config
+from instance.config import app_config
 from app.api.v1.views import Orders, OrdersManipulation, LandingPage
 
 def create_app(configuration):
 
     app = Flask(__name__)
-    app.config.from_object(config.app_config[configuration])
+    app.config.from_object(app_config[configuration])
     #app.config.from_pyfile('config.py')
     api = Api(app)
     api.add_resource(LandingPage, '/')

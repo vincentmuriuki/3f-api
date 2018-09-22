@@ -1,24 +1,27 @@
-from flask import current_app
-import psycopg2
+# System library
 import os
+from urllib.parse import urlparse
 
+# Third Party libraries
+#from flask import current_app
+import psycopg2
 
 # Local imports
 from fastfoodfast import queries
-from app.app import create_app
 
 def init_databse():
     # Initiate the db
-    database_url = os.getenv("DATABASE_URL")
-    conn = psycopg2.connect(database_url)
+    url = os.environ.get('DATABASE_URL')
+    conn = psycopg2.connect(url)
+    #conn = psycopg2.connect("dbname='fastfoodtest' user='postgres' password='1234' host='localhost' port='5432'")
     curr = conn.cursor()
     try:
         for query in queries:
-            curr.execute()
+            curr.execute(query)
         conn.commit()
         return conn
-    except:
-        print("Fail")
+    except Exception as e:
+        print(e)
 
 def dismantle():
     # Close db connections
