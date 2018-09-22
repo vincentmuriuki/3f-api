@@ -1,19 +1,17 @@
 # System library
 import os
-from urllib.parse import urlparse
 
 # Third Party libraries
 #from flask import current_app
 import psycopg2
 
 # Local imports
-from fastfoodfast import queries
+from .fastfoodfast import queries
 
 def init_databse():
-    # Initiate the db
+    # Initialize db
     url = os.environ.get('DATABASE_URL')
     conn = psycopg2.connect(url)
-    #conn = psycopg2.connect("dbname='fastfoodtest' user='postgres' password='1234' host='localhost' port='5432'")
     curr = conn.cursor()
     try:
         for query in queries:

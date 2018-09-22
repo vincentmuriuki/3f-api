@@ -39,4 +39,4 @@ CREATE TABLE IF NOT EXISTS orders (
 )
 """
 
-queries = [category_table, users_table, meals_table, orders_table, ]
+queries = [category_table, users_table, meals_table, orders_table]
