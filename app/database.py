@@ -1,12 +1,7 @@
 # System library
 import os
-<<<<<<< HEAD
-from urllib.parse import urlparse
-=======
->>>>>>> ch-db-connection-160654264
 
 # Third Party libraries
-#from flask import current_app
 import psycopg2
 
 # Local imports
