@@ -3,9 +3,9 @@ from app import create_app
 import json
 
 class TestFlaskApi(unittest.TestCase):
+    """ This class contains all tests that test endpoints """
 
     def setUp(self):
-
         self.app = create_app("testing")
         self.client = self.app.test_client()
         self.order_data = {

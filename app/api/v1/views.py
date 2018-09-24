@@ -17,6 +17,7 @@ orders_models = OrdersOperation()
 orders = orders_models.get_orders()
 
 class Orders(Resource):
+    """ This class handles api endpoints that handle all orders in general. """
     def get(self):
 
         if len(orders) == 0:
@@ -93,6 +94,7 @@ class Orders(Resource):
         ), 204
 
 class OrdersManipulation(Resource):
+    """ This class holds all api enpoints that handle specific order enpoints """
     def get(self, identifier):
         order = orders_models.get_specific_order(identifier)
 
@@ -143,6 +145,7 @@ class OrdersManipulation(Resource):
         ), 204
 
 class LandingPage(Resource):
+    """ This class handles the endpoint for the landing page """
     def get(self):        
         return """Copy this link to visit my git repo for the docs: https://github.com/tesh254/3f-api """
 
