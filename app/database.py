@@ -1,6 +1,9 @@
 # System library
 import os
+<<<<<<< HEAD
 from urllib.parse import urlparse
+=======
+>>>>>>> ch-db-connection-160654264
 
 # Third Party libraries
 #from flask import current_app
@@ -14,7 +17,6 @@ def init_database():
     url = os.environ.get('DATABASE_URL')
     conn = psycopg2.connect(url)
     #conn = psycopg2.connect("dbname='fastfoodtest' user='postgres' password='1234' host='localhost' port='5432'")
-    curr = conn.cursor()
     try:
         for query in queries:
             curr.execute(query)
@@ -56,6 +58,4 @@ def dismantle():
     except Exception as e:
         print(e)
         
-
-
 
