@@ -9,14 +9,13 @@ class TestFlaskApi(unittest.TestCase):
         self.app = create_app("testing")
         self.client = self.app.test_client()
         self.order_data = {
-            "username":"Lewis Ngugi",
-            "products":{
-                "name":"Chips Bhajia",
-                "qty":5,
-                "price":5
-            }
+            "username":"Erick Wachira",
+            "product_name":"Hamburger",
+            "price":450,
+            "qty":5,
+            "status":"Pending"
         }
-        self.status = 'delivered'
+        self.status = 'Delivered'
         self.order_id = 1   
 
     def post_data(self, path='/api/v1/orders', data_dict={}):
