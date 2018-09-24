@@ -32,7 +32,6 @@ class Orders(Resource):
         ), 200
 
     def post(self):
-<<<<<<< HEAD
         id = len(orders) + 1
         ordered_date = str(dt.datetime.now())
         delivered_date = None
@@ -77,15 +76,6 @@ class Orders(Resource):
         )
 
         return new_order, 201
-=======
-        new_order = orders_models.save_order()
-        return (
-            {
-                "message":"Success",
-                "order":new_order
-            }
-        ), 201
->>>>>>> ch-db-connection-160654264
 
     def delete(self):        
         orders = orders_models.get_orders()
