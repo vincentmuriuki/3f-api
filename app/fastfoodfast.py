@@ -5,7 +5,7 @@ CREATE TABLE IF NOT EXISTS users (
     email VARCHAR(25) NOT NULL,
     password VARCHAR(20) NOT NULL,
     address VARCHAR(20) NOT NULL,
-    type VARCHAR(20) NOT NULL
+    user_type boolean DEFAULT false
 )
 """
 
