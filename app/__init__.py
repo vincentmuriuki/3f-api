@@ -9,7 +9,7 @@ def create_app(configuration):
 
     app = Flask(__name__)
     app.config.from_object(app_config[configuration])
-    #app.config.from_pyfile('config.py')
+    app.config.from_pyfile('config.py')
     api = Api(app)
     api.add_resource(LandingPage, '/')
     api.add_resource(Orders, '/api/v1/orders')
