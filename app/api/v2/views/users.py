@@ -1,7 +1,7 @@
 import os
 import json
 
-from flask import Flask, request
+from flask import Flask, request, jsonify
 from flask_restful import reqparse, Resource, Api
 import jwt
 from werkzeug.exceptions import Conflict, Unauthorized, BadRequest
@@ -22,34 +22,46 @@ class UserRegistration(Resource):
         return "This is the signup page"
 
     def post(self):
-        data = request.data.decode().replace("'", '"')
+        data = request.get_json(force=True)
         if not data:
             raise BadRequest("Enter all fields")
-        user_creds = json.loads(data)
 
-        email = validate.email_validator(user_creds['email'])
-        username = validate.username_validator(user_creds['username'].split())
-        password = validate.password_validator(user_creds['password'].split())
+        
+        email = validate.email_validator(data['email'])
+        status = user_models.check_email_used(str(email))
+        if status is True:
+            username = validate.username_validator(data['username'])
+            password = validate.password_validator(data['password'])
 
-        new_user = {
-            'email':email,
-            'username':username,
-            'password':password,
-            'address':user_creds['address'].split()
-        }
+            new_user = {
+                'email':email,
+                'username':username,
+                'password':generate_password_hash(password),
+                'address':data['address']
+            }
 
-        user_id = user_models.user_signup(new_user)     
+            try:
+                user_id = user_models.user_signup(
+                    new_user['username'], 
+                    new_user['email'],
+                    new_user['address'],
+                    new_user['password']
+                )  
 
-        if not user_id:
-            raise Conflict("Something went wrong when creating an account")
+                if not user_id:
+                    raise Conflict("Something went wrong when creating an account")
+                else:
+                    token = common.get_token(user_id)
+                    return jsonify(
+                        {
+                            "message":"Account Created",
+                            "AuthToken":token
+                        }
+                    ), 201
+            except Exception as e:
+                raise BadRequest("Something is wrong {}".format(e))
         else:
-            token = common.get_token(user_id)
-            return (
-                {
-                    "message":"Account Created",
-                    "AuthToken":"{}".format(token.decode('utf-8'))
-                }
-            ), 201
+            raise BadRequest("Email is in use")
 
 class UserLogin(Resource):
     def get(self):

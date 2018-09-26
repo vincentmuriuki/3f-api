@@ -1,10 +1,10 @@
 users_table = """
 CREATE TABLE IF NOT EXISTS users (
     user_id serial PRIMARY KEY, 
-    username VARCHAR(25) NOT NULL,
-    email VARCHAR(25) NOT NULL,
-    password VARCHAR(64) NOT NULL,
-    address VARCHAR(20) NOT NULL,
+    username VARCHAR(55) NOT NULL,
+    email VARCHAR(55) NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    address VARCHAR(25) NOT NULL,
     user_type boolean DEFAULT false
 )
 """

@@ -9,23 +9,23 @@ from app.database import init_database
 class UserModels(object):
     """ This class will hold all methods for user authentication """    
     def __init__(self):
-        self.conn = init_database()
+        self.db = init_database()
         query  = """
             SELECT * FROM users 
         """
-        self.cursor = self.conn.cursor()
+        self.cursor = self.db.cursor()
         self.cursor.execute(query)
         self.users = self.cursor.fetchall()
 
     def get_login_email(self, email):
-        query = "SELECT * FROM users WHERE email ='%s'" % (email)
+        query = "SELECT * FROM users WHERE email=?",(email,)
         self.cursor.execute(query)
         data = self.cursor.fetchone()
-        self.cursor.close()
+        self.db.close()
         return data
 
     def close_db(self):
-        self.conn.close()
+        self.db.close()
 
     def get_all_users(self):
         return self.users
@@ -38,32 +38,34 @@ class UserModels(object):
         """, (token)
         self.cursor.execute(query)
         reject_token = self.cursor.fetchone()[0]
-        self.conn.commit()
-        self.cursor.close()
+        self.db.commit()
+        self.db.close()
         return reject_token
 
     def check_email_used(self, email):
         self.email = email
-        query = """
-            SELECT * FROM users WHERE email='%s'
-        """ % (email)
-        self.cursor.execute(query)
-        result = self.cursor.fetchone()
-        return result
+        curr = self.db.cursor()
+        curr.execute("SELECT email FROM users WHERE email = '%s'" % (self.email))
+        result = curr.fetchone()
+        print(result)
+        if result:
+            raise BadRequest("This email is already in use")
+        status = True
+        return status
 
-    def user_signup(self, data):
-        self.username = data.get('username')
-        self.email = data.get('email')
-        self.password = generate_password_hash(data.get('password'))
-        self.address = data.get('address')
-        self.user_type = False
-        reg_query = """
-            INSERT INTO users (username, email, password, address, user_type) VALUES ( %(username)s, %(email)s, %(password)s, %(address)s, %(user_type)s) 
-            RETURNING user_id;
-        ;"""
+    def user_signup(self,username, email, address, password, user_type = True):
+        try:
+            query = """INSERT INTO users (username, email, address, password, user_type) \
+            VALUES (%s, %s, %s, %s, %s) RETURNING user_id"""
 
-        self.cursor.query(reg_query, (data))
-        user_id = self.cursor.fetchone()[0]
-        self.conn.commit()
-        self.close_db()
-        return user_id
+            curr = self.db.cursor()
+            curr.execute(query, (username, email, address, password, user_type))
+            user_id = curr.fetchone()[0]
+            self.db.commit()
+            self.db.close()
+            return user_id
+        except Exception as e:
+            print(e)
+
+
+        
