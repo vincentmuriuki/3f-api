@@ -1,9 +1,9 @@
 import os
 
-from flask import Flask
+from flask import Flask, request
 from flask_restful import reqparse, Resource, Api
 import jwt
-from werkzeug.exceptions import Conflict, Unauthorized
+from werkzeug.exceptions import Conflict, Unauthorized, BadRequest
 from werkzeug.security import generate_password_hash, check_password_hash
 
 from app.api.v2.models.users import UserModels
@@ -89,7 +89,7 @@ class UserLogin(Resource):
         )
         args = parser.parse_args()
         user = user_models.get_login_email(args['email'])
-        if not record:
+        if not user:
             raise Unauthorized("The email does not exist, please register")
         user_id, email, username, password, user_type = user
         if not check_password_hash(password, args["password"]):
@@ -103,7 +103,28 @@ class UserLogin(Resource):
         ), 200
 
 class UserLogout(Resource):
-    pass
+    """ This endpoint serves the logout of a user """
+    def get(self):
+        return "You about to logout"
+    def post(self):
+        header = request.headers.get("Authorization")
+        if not header:
+            raise BadRequest(
+                "No access"
+            )
+        auth_token = header.split(" ")[1]
+        response = common.token_decoding(auth_token)
+        if isinstance(response, str):
+            raise Unauthorized(
+                "You are not allowed"
+            )
+        else:
+            user_token = user_models.user_logout(auth_token)
+            return (
+                {
+                    "message":"Logout done, hope you come soon"
+                }
+            ), 200
         
 
 

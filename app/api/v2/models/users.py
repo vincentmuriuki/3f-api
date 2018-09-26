@@ -19,6 +19,7 @@ class UserModels(object):
 
     def get_login_email(self, email):
         query = "SELECT * FROM users WHERE email ='%s'" % (email)
+        self.cursor.execute(query)
         data = self.cursor.fetchone()
         self.cursor.close()
         return data
@@ -28,6 +29,18 @@ class UserModels(object):
 
     def get_all_users(self):
         return self.users
+
+    def user_logout(self, token):
+        """ This will handle the logging out of a user """
+        query = """
+            INSERT INTO blacklist VALUES
+            (?) RETURNING user_tokens;
+        """, (token)
+        self.cursor.execute(query)
+        reject_token = self.cursor.fetchone()[0]
+        self.conn.commit()
+        self.cursor.close()
+        return reject_token
 
     def check_email_used(self, email):
         self.email = email
