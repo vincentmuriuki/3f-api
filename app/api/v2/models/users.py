@@ -14,8 +14,14 @@ class UserModels(object):
             SELECT * FROM users 
         """
         self.cursor = self.conn.cursor()
-        self.cursor.excute(query)
+        self.cursor.execute(query)
         self.users = self.cursor.fetchall()
+
+    def get_login_email(self, email):
+        query = "SELECT * FROM users WHERE email ='%s'" % (email)
+        data = self.cursor.fetchone()
+        self.cursor.close()
+        return data
 
     def close_db(self):
         self.conn.close()
@@ -32,30 +38,27 @@ class UserModels(object):
         result = self.cursor.fetchone()
         return result
 
-    def user_signup(self, username, email, password, address, user_type):
+    def user_signup(self, username, email, password, address, user_type=False):
         self.username = username
         self.email = email
         self.password = generate_password_hash(password)
         self.address = address
         self.user_type = user_type
-        
-        user_credentials = {
-            "username":self.username,
-            "email":self.email,
-            "password":self.password,
-            "address":self.address,
-            "user_type":self.user_type
-        }
-        email_check = self.check_email_used(user_credentials['email'])
+        email_check = self.check_email_used(self.email)
 
-        if email_check == []:
+        if not email_check:
             reg_query = """
-                INSERT INTO users (username, email, password, address, user_type) 
-                VALUES ( %(username)s, %(email)s, %(password)s, %(address)s, %(user_type)s) 
+                INSERT INTO users VALUES ( ?, ?, ?, ?, ?) 
                 RETURNING user_id;
-            """
+            """, (
+                self.username,
+                self.email,
+                self.password,
+                self.address,
+                self.user_type 
+            )
 
-            self.cursor.query(reg_query, user_credentials)
+            self.cursor.query(reg_query)
             user_id = self.cursor.fetchone()[0]
             self.conn.commit()
             self.close_db()

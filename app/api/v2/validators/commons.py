@@ -5,7 +5,6 @@ import jwt
 from werkzeug.exceptions import BadRequest, NotFound
 
 from app.database import init_database
-from app import create_app
 
 class Commons(object):
     """ This class holds all methods that contain common actions used in the project """
@@ -14,8 +13,6 @@ class Commons(object):
 
     @staticmethod
     def get_token(user_id):
-        application = create_app("development")
-
         try: 
             payload = {
                 "exp":dt.datetime.utcnow() + dt.timedelta(days=2),
@@ -24,7 +21,7 @@ class Commons(object):
             }
             token = jwt.encode(
                 payload,
-                application.config.get("SECRET_KEY"),
+                os.getenv("SECRET_KEY"),
                 algorithm="HS256"                
             )
             return token
@@ -32,8 +29,7 @@ class Commons(object):
             raise BadRequest(e)
 
     def token_decoding(self, token):
-        application = create_app("development")
-        secret_key = application.config.get("SECRET_KEY")
+        secret_key = os.getenv("SECRET_KEY")
 
         try:
             payload = jwt.decode(token, secret_key)

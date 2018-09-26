@@ -5,14 +5,14 @@ import os
 import psycopg2
 
 # Local imports
-from app.fastfoodfast import queries
+from .fastfoodfast import queries
 
 def init_database():
     """ This method is used initialize database """
     url = os.environ.get('DATABASE_URL')
     conn = psycopg2.connect(url)
     cursor = conn.cursor()
-    #conn = psycopg2.connect("dbname='fastfoodtest' user='postgres' password='1234' host='localhost' port='5432'")
+    print("Connected")
     try:
         for query in queries:
             cursor.execute(query)
@@ -53,5 +53,8 @@ def dismantle():
         conn.commit()
     except Exception as e:
         print(e)
+
+
+init_database()
         
 
