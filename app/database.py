@@ -45,6 +45,7 @@ def dismantle():
     meals = "DROP TABLE IF EXISTS meals CASCADE"
     orders = "DROP TABLE IF EXISTS orders CASCADE"
     category = "DROP TABLE IF EXISTS category CASCADE"
+    blacklist = "DROP TABLE IF EXISTS blacklist CASCADE"
 
     queries = [orders, meals, users, category]
     try:

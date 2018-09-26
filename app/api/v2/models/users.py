@@ -51,30 +51,19 @@ class UserModels(object):
         result = self.cursor.fetchone()
         return result
 
-    def user_signup(self, username, email, password, address, user_type=False):
-        self.username = username
-        self.email = email
-        self.password = generate_password_hash(password)
-        self.address = address
-        self.user_type = user_type
-        email_check = self.check_email_used(self.email)
+    def user_signup(self, data):
+        self.username = data.get('username')
+        self.email = data.get('email')
+        self.password = generate_password_hash(data.get('password'))
+        self.address = data.get('address')
+        self.user_type = False
+        reg_query = """
+            INSERT INTO users (username, email, password, address, user_type) VALUES ( %(username)s, %(email)s, %(password)s, %(address)s, %(user_type)s) 
+            RETURNING user_id;
+        ;"""
 
-        if not email_check:
-            reg_query = """
-                INSERT INTO users VALUES ( ?, ?, ?, ?, ?) 
-                RETURNING user_id;
-            """, (
-                self.username,
-                self.email,
-                self.password,
-                self.address,
-                self.user_type 
-            )
-
-            self.cursor.query(reg_query)
-            user_id = self.cursor.fetchone()[0]
-            self.conn.commit()
-            self.close_db()
-            return user_id
-        else:
-            raise BadRequest("Email is already in use")
+        self.cursor.query(reg_query, (data))
+        user_id = self.cursor.fetchone()[0]
+        self.conn.commit()
+        self.close_db()
+        return user_id

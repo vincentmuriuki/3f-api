@@ -1,4 +1,5 @@
 import os
+import json
 
 from flask import Flask, request
 from flask_restful import reqparse, Resource, Api
@@ -21,43 +22,23 @@ class UserRegistration(Resource):
         return "This is the signup page"
 
     def post(self):
-        parser = reqparse.RequestParser()
+        data = request.data.decode().replace("'", '"')
+        if not data:
+            raise BadRequest("Enter all fields")
+        user_creds = json.loads(data)
 
-        parser.add_argument('email',
-            type=str,
-            required=True,
-            help="An email should be provided"
-        )
-        parser.add_argument('username',
-            type=str,
-            required=True,
-            help="A username is a required field"
-        )
-        parser.add_argument('address',
-            type=str,
-            required=True,
-            help="An addresss is a required field"
-        )
-        parser.add_argument("password", 
-            type=str,
-            required=True,
-            help="A password is a required field"
-        )
-        
-        args = parser.parse_args()
+        email = validate.email_validator(user_creds['email'])
+        username = validate.username_validator(user_creds['username'].split())
+        password = validate.password_validator(user_creds['password'].split())
 
-        email = validate.email_validator(args['email'])
-        username = validate.username_validator(args['username'])
-        password = validate.password_validator(args['password'])
+        new_user = {
+            'email':email,
+            'username':username,
+            'password':password,
+            'address':user_creds['address'].split()
+        }
 
-        print(args['address'])
-
-        user_id = user_models.user_signup(
-            username,
-            email, 
-            password,
-            str(args['address'])
-        )        
+        user_id = user_models.user_signup(new_user)     
 
         if not user_id:
             raise Conflict("Something went wrong when creating an account")
