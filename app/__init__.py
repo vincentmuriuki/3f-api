@@ -18,7 +18,8 @@ def create_app(configuration):
     api.add_resource(LandingPage, '/')
     api.add_resource(Orders, '/orders')
     api.add_resource(OrdersManipulation, '/orders/<int:identifier>')
-    api.add_resource(UserRegistration, '/api/v2/users/signup')
+    api.add_resource(UserRegistration, '/api/v2/users/signup')    
+    api.add_resource(UserRegistration, '/api/v2/users/login')
 
 
     return app

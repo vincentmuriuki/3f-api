@@ -41,7 +41,7 @@ def dismantle():
     url = os.getenv('DATABASE_TEST_URL')
     conn = psycopg2.connect(url)
     cursor = conn.cursor()
-    users = "DROO TABLE IF EXISTS users CASCADE"
+    users = "DROP TABLE IF EXISTS users CASCADE"
     meals = "DROP TABLE IF EXISTS meals CASCADE"
     orders = "DROP TABLE IF EXISTS orders CASCADE"
     category = "DROP TABLE IF EXISTS category CASCADE"

@@ -4,8 +4,7 @@ import string
 
 
 from app import create_app
-from app.database import init_test_database
-from app.database import dismantle
+from app.database import init_test_database, dismantle
 
 class TestFlaskAuthentication(unittest.TestCase):
     """ This class contains all enpoint tests for authentication """
@@ -38,3 +37,23 @@ class TestFlaskAuthentication(unittest.TestCase):
         """ This will test the user registration """
         response = self.auth_data(data=self.user_creds)
         self.assertEqual(response.status_code, 201)
+
+    def test_user_login(self):
+        """ This will test the user registration """
+        data = {
+            "email":self.user_creds['email'],
+            "password":self.user_creds['password']
+        }
+        response = self.client.post(
+            '/api/v2/users/login', 
+            data=json.dumps(data), 
+            content_type="application/json"
+        )
+        self.assertEqual(response.status_code, 200)
+
+    def tearDown(self):
+        dismantle()
+
+
+if __name__ == "__main__":
+    unittest.main()
