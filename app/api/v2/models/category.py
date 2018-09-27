@@ -14,14 +14,12 @@ class CategoryModels(object):
         curr = self.db.cursor()
         curr.execute("INSERT INTO categories (category_name) VALUES ('%s')" % category_name)
         self.db.commit()
-        self.db.close()
 
     def get_specific_category(self, category_name):
         curr = self.db.cursor()
         curr.execute("SELECT * FROM categories WHERE category_name='%s'" % category_name)
         found_category = curr.fetchone()[1]
         self.db.commit()
-        self.db.close()
         return found_category
 
     def get_all_categories(self):
