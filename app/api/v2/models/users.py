@@ -63,6 +63,12 @@ class UserModels(object):
         curr.execute("SELECT * FROM users WHERE user_id='%s'" % user_id)
         user_details = curr.fetchone()
         return user_details
+
+    def get_user_type(self, user_id):
+        curr = self.db.cursor()
+        curr.execute("SELECT * FROM users WHERE user_id='%s'" % user_id)
+        user_type = curr.fetchone()[5]
+        return user_type
         
 
 

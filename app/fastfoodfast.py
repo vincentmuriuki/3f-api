@@ -23,7 +23,7 @@ CREATE TABLE IF NOT EXISTS meals (
 category_table = """
 CREATE TABLE IF NOT EXISTS categories (
  category_id serial PRIMARY KEY,
- category_name VARCHAR(25) NOT NULL
+ category_name VARCHAR(25) UNIQUE NOT NULL
 )
 """
 
