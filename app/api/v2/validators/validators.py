@@ -18,10 +18,12 @@ class Validators(object):
     def password_validator(self, password):
         self.password = password
         
-        if len(self.password) > 6 or len(self.password) < 12:
-            return self.password
+        if len(self.password) < 6:
+            raise BadRequest("Password is either to short[min six characters]")
+        elif len(self.password) > 12:
+            raise BadRequest("Password is too long [max twelve characters]")
         else:
-            raise BadRequest("Password is either to short or too long '[above 6 characters and below twelve characters]'")
+            return self.password            
             
 
     def username_validator(self, username):
