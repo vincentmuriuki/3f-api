@@ -6,7 +6,7 @@ class Config:
     DEBUG = False
     TESTING = False
     CSRF_ENABLED = True
-    SECRET_KEY = '5PAVHUG4HuYaCjDvMTPBmnHV3bRamRxx'
+    SECRET_KEY = os.getenv("SECRET_KEY", '5PAVHUG4HuYaCjDvMTPBmnHV3bRamRxx')
 
 class Development(Config):
     DEBUG = True
