@@ -23,7 +23,7 @@ class TestFlaskAuthentication(unittest.TestCase):
             with self.app.app_context():
                 self.db = init_test_database()
 
-    def auth_data(self, path='/api/v2/user/signup', data={}):
+    def auth_data(self, path='/api/v2/auth/signup', data={}):
         """ This method holds neccesary data to facilitate the test for user signup """
         if not data:
             data = self.user_creds
@@ -45,7 +45,7 @@ class TestFlaskAuthentication(unittest.TestCase):
             "password":self.user_creds['password']
         }
         response = self.client.post(
-            '/api/v2/users/login', 
+            '/api/v2/auth/login', 
             data=json.dumps(data), 
             content_type="application/json"
         )
