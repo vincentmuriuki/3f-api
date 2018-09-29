@@ -2,38 +2,52 @@ from functools import wraps
 import os
 
 from flask import request, jsonify
-from werkzeug.exceptions import BadRequest, NotFound
+from werkzeug.exceptions import BadRequest, NotFound, MethodNotAllowed
 import jwt
 
 from app.api.v2.models.users import UserModels
+from app.api.v2.helpers.token import TokenGen
+
+token_gen = TokenGen()
 
 user_models = UserModels()
 
-def token_required(function):
+def check_admin(function):
     @wraps(function)
     def decorated(*args, **kwargs):
-        token = None
-
-        if 'x-access-token' in request.headers:
-            token = request.headers['x-access-token']
+        auth_header = request.headers.get('Authorization')
+        if auth_header:
+            auth_token = auth_header.split(" ")[0]
+        else:
+            auth_token = ''
+            raise BadRequest("You need to login with admin credentials")
         
-        if not token:
-            return jsonify(
-                {
-                    "message":"Token is missing"
-                }
-            ), 401
+        if auth_token:
+            response = token_gen.decode_auth_token(auth_token)
+            if not isinstance(response, str):
+                user_credentials = user_models.get_user_creds_with_id(user_id=response)
+                if not user_credentials[5]:
+                    raise BadRequest("You dont have admin credentials")
+                
+                return function(*args, **kwargs)
+    return decorated
 
-        try:
-            data = jwt.decode(token, os.getenv("SECRET_KEY"))
-            current_user = user_models.get_user_creds_with_id(user_id=data['user_id'])
-        except Exception as e:
-            return jsonify(
-                {
-                    "message":"Token is invalid! this is why: {}".format(e)
-                }
-            ), 401
+def auth_required(function):
+    @wraps(function)
+    def decorated(*args, **kwargs):
+        auth_header = request.headers.get("Authorization")
+        if auth_header:
+            auth_token = auth_header.split(" ")[0]
+        else:
+            auth_token = ''
 
-        return function(current_user, *args, **kwargs)
+        if auth_token:
+            response = token_gen.decode_auth_token(auth_token)
+            if not isinstance(response, str):
+                user_credentials = user_models.get_user_creds_with_id(user_id=response)
+                if not user_credentials[5]:
+                    raise BadRequest("You need to signup or login")
+                
+                return function(*args, **kwargs)
 
     return decorated
