@@ -17,9 +17,10 @@ def check_admin(function):
     def decorated(*args, **kwargs):
         auth_header = request.headers.get('Authorization')
         if auth_header:
-            auth_token = auth_header.spli(" ")[0]
+            auth_token = auth_header.split(" ")[0]
         else:
             auth_token = ''
+            raise BadRequest("You need to login with admin credentials")
         
         if auth_token:
             response = token_gen.decode_auth_token(auth_token)
@@ -28,7 +29,7 @@ def check_admin(function):
                 if not user_credentials[5]:
                     raise BadRequest("You dont have admin credentials")
                 
-                return function(user_credentials, *args, **kwargs)
+                return function(*args, **kwargs)
     return decorated
 
 def auth_required(function):
@@ -47,6 +48,6 @@ def auth_required(function):
                 if not user_credentials[5]:
                     raise BadRequest("You need to signup or login")
                 
-                return function(user_credentials, *args, **kwargs)
-                
+                return function(*args, **kwargs)
+
     return decorated

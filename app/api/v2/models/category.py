@@ -12,7 +12,7 @@ class CategoryModels(object):
 
     def create_category(self, category_name):
         curr = self.db.cursor()
-        curr.execute("INSERT INTO categories (category_name) VALUES ('%s')" % category_name)
+        curr.execute("INSERT INTO categories (category_name) VALUES ('%s')" % (category_name))
         self.db.commit()
 
     def get_specific_category(self, category_name):
@@ -21,7 +21,7 @@ class CategoryModels(object):
         found_category = curr.fetchone()[1]
         self.db.commit()
         return found_category
-
+    
     def get_all_categories(self):
         curr = self.db.cursor()
         curr.execute("SELECT * FROM categories")
