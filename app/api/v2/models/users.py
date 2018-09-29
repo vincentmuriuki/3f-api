@@ -6,6 +6,7 @@ from werkzeug.exceptions import BadRequest, NotFound
 
 from app.database import init_database
 
+email_query = "SELECT * FROM users WHERE email='%s'"
 class UserModels(object):
     """ This class will hold all methods for user authentication """    
     def __init__(self):
@@ -14,7 +15,7 @@ class UserModels(object):
     def email_exists(self, email):
         self.email = email
         curr = self.db.cursor()
-        curr.execute("SELECT * FROM users WHERE email='%s'" % self.email)
+        curr.execute(email_query % self.email)
         email_found = curr.fetchone()
         if email_found:
             raise BadRequest("Email in use")
@@ -23,7 +24,7 @@ class UserModels(object):
                 
 
 
-    def create_user(self, username, email, address, password, user_type = False):        
+    def create_user(self, username, email, address, password, user_type):        
         self.username = username
         self.email = email
         self.address = address
@@ -42,19 +43,19 @@ class UserModels(object):
 
     def get_login_email(self, email):
         curr = self.db.cursor()
-        curr.execute("SELECT * FROM users WHERE email='%s'" % email)
+        curr.execute(email_query % email)
         user_in = curr.fetchone()
         return user_in
 
     def get_user_password(self, email):
         curr = self.db.cursor()
-        curr.execute("SELECT * FROM users WHERE email='%s'" % email)
+        curr.execute(email_query % email)
         hashed_password = curr.fetchone()[3]
         return hashed_password
 
     def get_user_id(self, email):
         curr = self.db.cursor()
-        curr.execute("SELECT * FROM users WHERE email='%s'" % email)
+        curr.execute(email_query % email)
         user_id = curr.fetchone()[0]
         return user_id
 
@@ -64,11 +65,23 @@ class UserModels(object):
         user_details = curr.fetchone()
         return user_details
 
-    def get_user_type(self, user_id):
+    def token_blacklist(self, token):
+        """
+        This stores tokens used by users
+        """
         curr = self.db.cursor()
-        curr.execute("SELECT * FROM users WHERE user_id='%s'" % user_id)
-        user_type = curr.fetchone()[5]
-        return user_type
+        curr.execute("""INSERT INTO blacklist (user_tokens) VALUES ('%s')""" % (token))
+        self.db.commit()
+        return token
+    def check_token_blacklist(self, token):
+        """
+        This checks for a blacklisted token
+        """
+        curr = self.db.cursor()
+        curr.execute("SELECT * FROM blacklist WHERE user_tokens='%s'" % (token))
+        token_blacklisted = curr.fetchone()
+        return token_blacklisted
+
         
 
 

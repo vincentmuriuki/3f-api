@@ -41,8 +41,9 @@ CREATE TABLE IF NOT EXISTS orders (
 
 blacklist = """
 CREATE TABLE IF NOT EXISTS blacklist (
-    user_tokens character varying(200) NOT NULL
+    token_id serial PRIMARY KEY,
+    user_tokens character varying(900) NOT NULL
 ) 
 """
 
-queries = [category_table, users_table, meals_table, orders_table]
+queries = [category_table, users_table, meals_table, orders_table, blacklist]

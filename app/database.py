@@ -44,10 +44,10 @@ def dismantle():
     users = "DROP TABLE IF EXISTS users CASCADE"
     meals = "DROP TABLE IF EXISTS meals CASCADE"
     orders = "DROP TABLE IF EXISTS orders CASCADE"
-    category = "DROP TABLE IF EXISTS category CASCADE"
+    category = "DROP TABLE IF EXISTS categories CASCADE"
     blacklist = "DROP TABLE IF EXISTS blacklist CASCADE"
 
-    queries = [orders, meals, users, category]
+    queries = [orders, meals, users, category, blacklist]
     try:
         for query in queries:
             cursor.execute(query)
