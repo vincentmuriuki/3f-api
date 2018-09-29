@@ -25,7 +25,7 @@ def check_admin(function):
         if auth_token:
             response = token_gen.decode_auth_token(auth_token)
             if not isinstance(response, str):
-                user_credentials = user_models.get_user_creds_with_id(user_id=response)
+                user_credentials = user_models.get_user_creds_with_id(user_id=response[0])
                 if not user_credentials[5]:
                     raise BadRequest("You dont have admin credentials")
                 

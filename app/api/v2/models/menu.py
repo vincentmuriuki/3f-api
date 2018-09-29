@@ -1,10 +1,8 @@
 import json
 
-from werkzeug.exceptions import BadRequest, NotFound, InternalServerError
-
 from app.database import init_database
 
-class Menu(object):
+class MenuModels(object):
     """ This is the model for the menu which holds all meals """
     def __init__(self):
         self.db = init_database()
