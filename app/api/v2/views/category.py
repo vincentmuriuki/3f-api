@@ -3,10 +3,11 @@ from werkzeug.exceptions import BadRequest, NotFound
 from flask_restful import Resource
 
 from app.api.v2.models.category import CategoryModels
-from app.api.v2.helpers.helpers import check_admin, token_required
+from app.api.v2.helpers.helpers import check_admin, auth_required
 
 category_models = CategoryModels()
 
+@check_admin
 class Categories(Resource):
     """ This class houses all endpoints involving categories """
     def get(self):
