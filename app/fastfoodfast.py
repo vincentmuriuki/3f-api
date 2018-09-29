@@ -15,8 +15,8 @@ CREATE TABLE IF NOT EXISTS meals (
     description VARCHAR(25) NOT NULL,
     price INT NOT NULL,
     meal_id serial PRIMARY KEY,
-    category_id INT NOT NULL,
-    FOREIGN KEY (category_id) REFERENCES categories (category_id)
+    category_name  NOT NULL,
+    FOREIGN KEY (category_name) REFERENCES categories (category_name)
 )
 """
 
