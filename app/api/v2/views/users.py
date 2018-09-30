@@ -54,7 +54,6 @@ class UserRegistration(Resource):
             default=False
         )
         args = parser.parse_args()
-        data = request.get_json()
         email = validate.email_validator(args['email'])
         password = validate.password_validator(args['password'])
         username = validate.username_validator(args['username'])
