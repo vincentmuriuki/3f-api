@@ -15,15 +15,15 @@ CREATE TABLE IF NOT EXISTS meals (
     description VARCHAR(25) NOT NULL,
     price INT NOT NULL,
     meal_id serial PRIMARY KEY,
-    category_id INT NOT NULL,
-    FOREIGN KEY (category_id) REFERENCES categories (category_id)
+    category_name VARCHAR(50) NOT NULL,
+    FOREIGN KEY (category_name) REFERENCES categories (category_name)
 )
 """
 
 category_table = """
 CREATE TABLE IF NOT EXISTS categories (
  category_id serial PRIMARY KEY,
- category_name VARCHAR(25) NOT NULL
+ category_name VARCHAR(25) UNIQUE NOT NULL
 )
 """
 
@@ -32,7 +32,8 @@ CREATE TABLE IF NOT EXISTS orders (
     order_id serial PRIMARY KEY,
     user_id INT NOT NULL,
     meal VARCHAR(35) UNIQUE NOT NULL,
-    ordered_date VARCHAR(250) NOT NULL,
+    ordered_date timestamp NOT NULL,
+    delivered_date timestamp,
     price INT NOT NULL,
     qty INT NOT NULL,
     amount INT NOT NULL,
