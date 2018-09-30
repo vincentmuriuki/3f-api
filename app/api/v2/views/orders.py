@@ -71,6 +71,18 @@ class OrdersMain(Resource):
 
 class SingleOrders(Resource):
     """ This class will handle single orders made """
+    def get(self, identifier):
+        result = order_models.get_order_by_id(identifier)
+        if result:
+            return (
+                {
+                    "status":"Success",
+                    "order":[]
+                }
+            ), 200
+        else:
+            raise NotFound("Order of that identifier not found")
+
     def put(self, identifier):
         result = order_models.get_order_by_id(identifier)
         if result:
