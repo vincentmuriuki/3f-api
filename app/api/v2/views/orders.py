@@ -69,4 +69,18 @@ class OrdersMain(Resource):
             }
         ), 201
 
-
+class SingleOrders(Resource):
+    """ This class will handle single orders made """
+    def put(self, identifier):
+        result = order_models.get_order_by_id(identifier)
+        if result:
+            status = "Delivered"
+            delivered_date = dt.datetime.now()
+            order_models.update_status(identifier, status, delivered_date)
+            return (
+                {
+                    "status":"Success, Order delivered"
+                }
+            ), 201
+        else:
+            raise NotFound("Order of that identifier was not found")
