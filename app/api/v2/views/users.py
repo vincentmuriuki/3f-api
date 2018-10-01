@@ -54,19 +54,19 @@ class UserRegistration(Resource):
             default=False
         )
         args = parser.parse_args()
-        data = request.get_json()
         email = validate.email_validator(args['email'])
         password = validate.password_validator(args['password'])
         username = validate.username_validator(args['username'])
         hashed_password = generate_password_hash(password, method='sha256')
         new_email = user_models.email_exists(email)
-        user_id = user_models.create_user(
-            username=username, 
-            email=new_email, 
-            address=args['address'], 
-            password=hashed_password, 
-            user_type=args['user_type']
-        )
+        new_user = {
+            "email":new_email,
+            "username":username,
+            "password":hashed_password,
+            "address":args['address'],
+            "user_type":args['user_type']
+        }
+        user_id = user_models.create_user(new_user)
         auth_token = token_gen.encode_auth_token(user_id)        
         return(
             {

@@ -2,9 +2,15 @@ import unittest
 import json
 import string
 
+import psycopg2
 
 from app import create_app
 from app.database import init_test_database, dismantle
+from app.api.v2.models.users import UserModels
+from app.api.v2.helpers.token import TokenGen
+
+user_models = UserModels()
+token_gen = TokenGen()
 
 class TestFlaskAuthentication(unittest.TestCase):
     """ This class contains all enpoint tests for authentication """
@@ -17,39 +23,39 @@ class TestFlaskAuthentication(unittest.TestCase):
                 "username":"Erick Wachira",
                 "email":"ewachira254@gmail.com",
                 "password":"asdfgh",
-                "address":"Kawangware"
+                "address":"CBD",
+                "user_type":True
             }
 
             with self.app.app_context():
                 self.db = init_test_database()
 
-    def auth_data(self, path='/api/v2/auth/signup', data={}):
-        """ This method holds neccesary data to facilitate the test for user signup """
-        if not data:
-            data = self.user_creds
-        return (
-            self.client.post(
-                path, data=json.dumps(data), content_type='applications/json'
-            )
-        )
+    def test_decoding_token(self):
+        user_id = user_models.create_user(self.user_creds)
+        try:
+            auth_token = token_gen.encode_auth_token(user_id)
+        except psycopg2.ProgrammingError as e:
+            print(e)
+
+        
+        self.assertTrue(isinstance(auth_token, bytes))
+        self.assertTrue(token_gen.decode_auth_token(auth_token) == 1)
 
     def test_user_signup(self):
-        """ This will test the user registration """
-        response = self.auth_data(data=self.user_creds)
-        self.assertEqual(response.status_code, 201)
-
-    def test_user_login(self):
-        """ This will test the user registration """
-        data = {
-            "email":self.user_creds['email'],
-            "password":self.user_creds['password']
-        }
         response = self.client.post(
-            '/api/v2/auth/login', 
-            data=json.dumps(data), 
-            content_type="application/json"
+            '/api/v2/auth/signup',
+            data=json.dumps(dict(
+                username="Erick Wachira",
+                email="data@fmail.com",
+                password="felisha",
+                address="Thika",
+                user_type=True
+            )),
+            content_type='application/json'
         )
-        self.assertEqual(response.status_code, 200)
+        self.assertTrue(response.content_type == 'application/json')
+        self.assertEqual(response.status_code, 201)
+   
 
     def tearDown(self):
         dismantle()

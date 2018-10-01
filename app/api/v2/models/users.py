@@ -20,16 +20,14 @@ class UserModels(object):
         if email_found:
             raise BadRequest("Email in use")
         else:
-            return self.email
-                
+            return self.email       
 
-
-    def create_user(self, username, email, address, password, user_type):        
-        self.username = username
-        self.email = email
-        self.address = address
-        self.password = password
-        self.user_type = user_type
+    def create_user(self, data):        
+        self.username = data['username']
+        self.email = data['email']
+        self.address = data['address']
+        self.password = data['password']
+        self.user_type = data['user_type']
 
         curr = self.db.cursor()
         curr.execute("""INSERT INTO users (username, email, password, address, user_type) 
@@ -70,7 +68,7 @@ class UserModels(object):
         This stores tokens used by users
         """
         curr = self.db.cursor()
-        curr.execute("""INSERT INTO blacklist (user_tokens) VALUES ('%s')""" % (token))
+        curr.execute("""INSERT INTO blacklist (user_tokens) VALUES ('%s')""" % token)
         self.db.commit()
         return token
     def check_token_blacklist(self, token):
