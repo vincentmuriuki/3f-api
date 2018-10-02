@@ -1,6 +1,7 @@
 import os
 import json
 import datetime as dt
+import base64
 
 from flask import Flask, request, jsonify, make_response
 from flask_restful import reqparse, Resource, Api
@@ -104,18 +105,14 @@ class UserLogin(Resource):
         status = user_models.get_login_email(args['email'])
         if status:
             if check_password_hash(status[3], args['password']):
-                auth_token = token_gen.encode_auth_token(status[0])
-
-              
+                auth_token = token_gen.encode_auth_token(status[0])            
 
                 if auth_token:
-                    auth_token = auth_token.decode("utf-8")
-
                     return (
                         {
                             "status":"Success",
                             "message":"Successfully logged in.",
-                            "auth_token":auth_token
+                            "auth_token":base64.decodebytes(auth_token)
                         }
                     ), 200
                 else:
