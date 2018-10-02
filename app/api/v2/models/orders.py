@@ -54,7 +54,7 @@ class OrderModels(object):
     def find_order_by_user_id(self, user_id):
         curr = self.db.cursor()
         curr.execute("SELECT * FROM orders WHERE user_id='%s'" % user_id)
-        result = curr.fetchone()
+        result = curr.fetchall()
         self.db.commit()
         return result
-        
+

@@ -6,7 +6,9 @@ from flask_restful import Resource, reqparse
 
 from app.api.v2.models.orders import OrderModels
 from app.api.v2.helpers.helpers import auth_required, check_admin
+from app.api.v2.helpers.serializer import Serializers
 
+serialize = Serializers()
 order_models = OrderModels()
 
 class OrdersMain(Resource):
@@ -56,7 +58,6 @@ class OrdersMain(Resource):
         order_models.add_order(
             args['meal'],
             args['qty'],
-            ordered_date,
             str(ordered_date),
             args['price'],
             status,
@@ -95,15 +96,13 @@ class SingleOrders(Resource):
             ), 200
         else:
             raise NotFound("Order of that identifier not found")
-
+    @check_admin
     def put(self, identifier):
         result = order_models.get_order_by_id(identifier)
         if result:
             status = "Delivered"
-            delivered_date = dt.datetime.now()
-            order_models.update_status(identifier, status, delivered_date)
             delivered_date = str(dt.datetime.now())
-            order_models.update_status(identifier, delivered_date)
+            order_models.update_status(identifier, status,delivered_date)
             return (
                 {
                     "status":"Success, Order delivered"
@@ -112,3 +111,21 @@ class SingleOrders(Resource):
         else:
             raise NotFound("Order of that identifier was not found")
 
+class UserOrders(Resource):
+    """ This holds the endpoint for getting orders made by a specific user"""
+    @check_admin
+    def get(self, identifier):
+        result = order_models.find_order_by_user_id(identifier)
+        orders = []
+        if result:
+            for u in result:
+                order = serialize.serialize_order(u)
+                orders.append(order)
+            return (
+                {
+                    "status":"Success",
+                    "orders":orders
+                }
+            ), 200
+        else:
+            raise NotFound("The user has not not placed any order")
