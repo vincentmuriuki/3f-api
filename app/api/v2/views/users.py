@@ -74,7 +74,7 @@ class UserRegistration(Resource):
                 {
                     "status":"Success",
                     "message":"User created successfully",
-                    "auth_token":auth_token,
+                    "auth_token":str(auth_token),
                     "user_id":user_id
                 }
             ), 201
@@ -109,7 +109,7 @@ class UserLogin(Resource):
                         {
                             "status":"Success",
                             "message":"Successfully logged in.",
-                            "auth_token":auth_token
+                            "auth_token":str(auth_token)
                         }
                     ), 200
                 else:
