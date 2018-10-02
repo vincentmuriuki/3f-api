@@ -6,6 +6,7 @@ import psycopg2
 
 # Local imports
 from .fastfoodfast import queries
+from instance.config import app_config
 
 def db_type():
     """ Check the type of db used """
