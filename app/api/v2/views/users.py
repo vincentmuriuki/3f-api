@@ -109,7 +109,7 @@ class UserLogin(Resource):
                         {
                             "status":"Success",
                             "message":"Successfully logged in.",
-                            "auth_token":auth_token.decode()
+                            "auth_token":auth_token
                         }
                     ), 200
                 else:
