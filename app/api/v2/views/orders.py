@@ -3,19 +3,56 @@ import json
 
 from werkzeug.exceptions import BadRequest, NotFound
 from flask_restful import Resource, reqparse
+from flask import request
 
+from app.api.v2.helpers.token import TokenGen
 from app.api.v2.models.orders import OrderModels
 from app.api.v2.helpers.helpers import auth_required, check_admin
 from app.api.v2.helpers.serializer import Serializers
 
 serialize = Serializers()
 order_models = OrderModels()
+token_gen = TokenGen()
+
+class AdminOrders(Resource):
+    """ This will handle admin related functions on orders as a whole """
+    @check_admin
+    def get(self):
+        orders_result = order_models.get_orders()
+        orders = []
+        if orders_result:
+            for u in orders_result:
+                order = serialize.serialize_order(u)
+                orders.append(order)
+            return (
+                {
+                    "message":"Success",
+                    "orders":orders
+                }
+            ), 200
+        else: 
+            return BadRequest("No order table")
+            
 
 class OrdersMain(Resource):
     """ This class holds the endpoints for orders as a whole """
     @auth_required
     def get(self):
-        orders = order_models.get_orders()
+        auth_header = request.headers.get("Authorization")
+        if auth_header:
+            auth_token = auth_header.split(" ")[0]
+        else:
+            auth_token = ''
+            raise NotFound("Token absences please ")
+
+        user_id = token_gen.decode_auth_token(auth_token)
+        orders_result = order_models.find_order_by_user_id(user_id)
+        orders = []
+        if orders_result:
+            for u in orders_result:
+                order = serialize.serialize_order(u)
+                orders.append(order)
+
         return (
             {
                 "status":"Success",
@@ -124,7 +161,7 @@ class UserOrders(Resource):
             return (
                 {
                     "status":"Success",
-                    "orders":orders
+                    "order":orders
                 }
             ), 200
         else:
