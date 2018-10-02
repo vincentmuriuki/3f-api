@@ -51,4 +51,3 @@ class OrderModels(object):
         """ % (delivered_date,order_id))
         self.db.commit()
 
-

@@ -20,7 +20,7 @@ class OrdersMain(Resource):
                 "orders":orders
             }
         ), 200
-
+      
     @auth_required
     def post(self):
         parser = reqparse.RequestParser()
@@ -109,3 +109,4 @@ class SingleOrders(Resource):
             ), 201
         else:
             raise NotFound("Order of that identifier was not found")
+
