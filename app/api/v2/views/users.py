@@ -105,13 +105,17 @@ class UserLogin(Resource):
         if status:
             if check_password_hash(status[3], args['password']):
                 auth_token = token_gen.encode_auth_token(status[0])
+
+              
+
                 if auth_token:
-                    auth_token = auth_token
+                    auth_token = auth_token.decode("utf-8")
+
                     return (
                         {
                             "status":"Success",
                             "message":"Successfully logged in.",
-                            "auth_token":str(auth_token)
+                            "auth_token":auth_token
                         }
                     ), 200
                 else:
