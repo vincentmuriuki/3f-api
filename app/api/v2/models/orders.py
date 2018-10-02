@@ -43,4 +43,10 @@ class OrderModels(object):
         """ % (user_id, meal, ordered_date, price, qty, amount, status, description))
         self.db.commit()
         
-
+    def update_status(self, order_id, status, delivered_date):
+        curr = self.db.cursor()
+        curr.execute("""
+        UPDATE orders SET status='%s' AND delivered_date='%s'
+        WHERE order_id='%s'
+        """ % (status, delivered_date,order_id))
+        self.db.commit()

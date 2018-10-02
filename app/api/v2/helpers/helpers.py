@@ -34,7 +34,6 @@ def check_admin(function):
             raise BadRequest("Your session is invalid")
             
         raise BadRequest("We dont know you please login to access")
-
     return decorated
 
 def auth_required(function):

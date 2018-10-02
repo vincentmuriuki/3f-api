@@ -1,4 +1,5 @@
-import datetime as dt 
+import datetime as dt
+import json
 
 from werkzeug.exceptions import BadRequest, NotFound
 from flask_restful import Resource, reqparse
@@ -19,7 +20,7 @@ class OrdersMain(Resource):
                 "orders":orders
             }
         ), 200
-
+      
     @auth_required
     def post(self):
         parser = reqparse.RequestParser()
@@ -56,6 +57,7 @@ class OrdersMain(Resource):
             args['meal'],
             args['qty'],
             ordered_date,
+            str(ordered_date),
             args['price'],
             status,
             args['description'],
@@ -68,5 +70,45 @@ class OrdersMain(Resource):
                 "order":args
             }
         ), 201
+class SingleOrders(Resource):
+    """ This class will handle single orders made """
+    def get(self, identifier):
+        result = order_models.get_order_by_id(identifier)
+        if result:
+            print(result)
+            return (
+                {
+                    "status":"Success",
+                    "order":{
+                        "order_id":result[0],
+                        "user_id":result[1],
+                        "meal":result[2],
+                        "ordered_date":result[3],
+                        "delivered_date":result[4],
+                        "price":result[5],
+                        "qty":result[6],
+                        "amount":result[7],
+                        "status":result[8],
+                        "description":result[9]
+                    }
+                }
+            ), 200
+        else:
+            raise NotFound("Order of that identifier not found")
 
+    def put(self, identifier):
+        result = order_models.get_order_by_id(identifier)
+        if result:
+            status = "Delivered"
+            delivered_date = dt.datetime.now()
+            order_models.update_status(identifier, status, delivered_date)
+            delivered_date = str(dt.datetime.now())
+            order_models.update_status(identifier, delivered_date)
+            return (
+                {
+                    "status":"Success, Order delivered"
+                }
+            ), 201
+        else:
+            raise NotFound("Order of that identifier was not found")
 
