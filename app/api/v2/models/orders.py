@@ -50,3 +50,11 @@ class OrderModels(object):
         WHERE order_id='%s'
         """ % (status, delivered_date,order_id))
         self.db.commit()
+
+    def find_order_by_user_id(self, user_id):
+        curr = self.db.cursor()
+        curr.execute("SELECT * FROM orders WHERE user_id='%s'" % user_id)
+        result = curr.fetchone()
+        self.db.commit()
+        return result
+        
