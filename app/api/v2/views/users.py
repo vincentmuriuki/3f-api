@@ -70,7 +70,7 @@ class UserRegistration(Resource):
             user_id = user_models.create_user(new_user)
             print(user_id)
             auth_token = token_gen.encode_auth_token(user_id)  
-            decode_token = auth_token.decode()      
+            decode_token = auth_token.decode("utf-8")      
             return(
                 {
                     "status":"Success",
@@ -106,7 +106,7 @@ class UserLogin(Resource):
             if check_password_hash(status[3], args['password']):
                 auth_token = token_gen.encode_auth_token(status[0])
                 if auth_token:
-                    auth_token = auth_token.decode()
+                    auth_token = auth_token.decode("utf-8")
                     return (
                         {
                             "status":"Success",
