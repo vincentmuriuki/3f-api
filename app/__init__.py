@@ -4,7 +4,7 @@ from flask_restful import Api
 # Local Import
 from instance.config import app_config
 from app.api.v1.views import Orders, OrdersManipulation, LandingPage
-from app.api.v2.views.orders import OrdersMain, SingleOrders
+from app.api.v2.views.orders import OrdersMain, SingleOrders, UserOrders
 from app.api.v2.views.users import UserRegistration, UserLogin, UserLogout, User
 from app.api.v2.views.category import Categories
 
@@ -26,6 +26,7 @@ def create_app(configuration):
     api.add_resource(Categories, '/api/v2/admin/categories')
     api.add_resource(Menu, '/api/v2/menu')
     api.add_resource(SingleOrders, '/api/v2/orders/<int:identifier>')
+    api.add_resource(UserOrders, '/api/v2/user/orders/<int:identifier>')
 
 
     return app
