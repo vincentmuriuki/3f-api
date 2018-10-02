@@ -11,7 +11,7 @@ CREATE TABLE IF NOT EXISTS users (
 
 meals_table = """
 CREATE TABLE IF NOT EXISTS meals (
-    name VARCHAR(25) NOT NULL,
+    name VARCHAR(25) UNIQUE NOT NULL,
     description VARCHAR(25) NOT NULL,
     price INT NOT NULL,
     meal_id serial PRIMARY KEY,
@@ -31,11 +31,15 @@ orders_table = """
 CREATE TABLE IF NOT EXISTS orders (
     order_id serial PRIMARY KEY,
     user_id INT NOT NULL,
+    meal VARCHAR(35) UNIQUE NOT NULL,
     ordered_date VARCHAR(250) NOT NULL,
     price INT NOT NULL,
+    qty INT NOT NULL,
+    amount INT NOT NULL,
     status VARCHAR (25) NOT NULL,
     description VARCHAR(255),
-    FOREIGN KEY (user_id) REFERENCES users (user_id)
+    FOREIGN KEY (user_id) REFERENCES users (user_id),
+    FOREIGN KEY (meal) REFERENCES meals (name)
 )
 """
 
