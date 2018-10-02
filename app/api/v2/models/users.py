@@ -4,13 +4,16 @@ import jwt
 from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.exceptions import BadRequest, NotFound
 
-from app.database import init_database
+from app.database import init_database, init_test_database
 
 email_query = "SELECT * FROM users WHERE email='%s'"
 class UserModels(object):
     """ This class will hold all methods for user authentication """    
-    def __init__(self):
-        self.db = init_database()
+    def __init__(self):  
+        if os.getenv("CONFIG_TYPE") == "testing":
+            self.db = init_test_database()
+        else:
+            self.db = init_database()
 
     def email_exists(self, email):
         self.email = email
@@ -20,16 +23,14 @@ class UserModels(object):
         if email_found:
             raise BadRequest("Email in use")
         else:
-            return self.email
-                
+            return self.email       
 
-
-    def create_user(self, username, email, address, password, user_type):        
-        self.username = username
-        self.email = email
-        self.address = address
-        self.password = password
-        self.user_type = user_type
+    def create_user(self, data):        
+        self.username = data['username']
+        self.email = data['email']
+        self.address = data['address']
+        self.password = data['password']
+        self.user_type = data['user_type']
 
         curr = self.db.cursor()
         curr.execute("""INSERT INTO users (username, email, password, address, user_type) 
@@ -70,7 +71,7 @@ class UserModels(object):
         This stores tokens used by users
         """
         curr = self.db.cursor()
-        curr.execute("""INSERT INTO blacklist (user_tokens) VALUES ('%s')""" % (token))
+        curr.execute("""INSERT INTO blacklist (user_tokens) VALUES ('%s')""" % token)
         self.db.commit()
         return token
     def check_token_blacklist(self, token):
