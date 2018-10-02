@@ -1,4 +1,4 @@
-import datetime as dt 
+import datetime as dt
 import json
 
 from werkzeug.exceptions import BadRequest, NotFound
@@ -56,6 +56,7 @@ class OrdersMain(Resource):
         order_models.add_order(
             args['meal'],
             args['qty'],
+            ordered_date,
             str(ordered_date),
             args['price'],
             status,
@@ -69,7 +70,6 @@ class OrdersMain(Resource):
                 "order":args
             }
         ), 201
-
 class SingleOrders(Resource):
     """ This class will handle single orders made """
     def get(self, identifier):
