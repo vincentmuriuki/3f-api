@@ -8,12 +8,11 @@ class Validators(object):
         pass 
 
     def email_validator(self, email):
-        self.email = email
         if not re.match(r'^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,4})$',
             email):
             raise BadRequest("Please provide a valid email")
         else:
-            return self.email
+            return email
 
     def password_validator(self, password):
         self.password = password

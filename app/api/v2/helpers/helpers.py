@@ -25,11 +25,15 @@ def check_admin(function):
         if auth_token:
             response = token_gen.decode_auth_token(auth_token)
             if not isinstance(response, str):
-                user_credentials = user_models.get_user_creds_with_id(user_id=response)
+                user_credentials = user_models.get_user_creds_with_id(user_id=response[0])
                 if not user_credentials[5]:
                     raise BadRequest("You dont have admin credentials")
                 
                 return function(*args, **kwargs)
+
+            raise BadRequest("Your session is invalid")
+            
+        raise BadRequest("We dont know you please login to access")
     return decorated
 
 def auth_required(function):
@@ -49,5 +53,9 @@ def auth_required(function):
                     raise BadRequest("You need to signup or login")
                 
                 return function(*args, **kwargs)
+            else:
+                raise BadRequest("Your token has a problem")
+        else:
+            raise BadRequest("Token not found try logging in")
 
     return decorated
