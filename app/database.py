@@ -6,13 +6,23 @@ import psycopg2
 
 # Local imports
 from .fastfoodfast import queries
+from instance.config import app_config
+
+def db_type():
+    """ Check the type of db used """
+    if os.getenv("CONFIG_TYPE") == "testing":
+        url = os.getenv("DATABASE_TEST_URL")
+        return url
+    else:
+        url = os.getenv("DATABASE_URL")
+        return url
 
 def init_database():
     """ This method is used initialize database """
-    url = os.environ.get('DATABASE_URL')
+    url = db_type()
     conn = psycopg2.connect(url)
     cursor = conn.cursor()
-    print("Connected")
+    print("Connected to main db")
     try:
         for query in queries:
             cursor.execute(query)
@@ -21,11 +31,14 @@ def init_database():
     except Exception as e:
         print(e)
 
+    
+
 def init_test_database():
     """ This method is used to initialize test database """
-    url = os.environ.get("DATABASE_TEST_URL")
+    url = db_type()
     conn = psycopg2.connect(url)
     cursor = conn.cursor()
+    print("Connected to test db")
     dismantle()
     try:
         for query in queries:
@@ -54,8 +67,5 @@ def dismantle():
         conn.commit()
     except Exception as e:
         print(e)
-
-
-init_database()
         
 

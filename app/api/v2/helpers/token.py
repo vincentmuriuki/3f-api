@@ -18,7 +18,7 @@ class TokenGen(object):
         """
         try:
             payload = {
-                'exp': dt.datetime.utcnow() + dt.timedelta(days=0, minutes=180),
+                'exp': dt.datetime.utcnow() + dt.timedelta(days=0, minutes=10080),
                 'iat':dt.datetime.utcnow(),
                 'sub':user_id
             }
