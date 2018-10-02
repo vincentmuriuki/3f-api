@@ -16,19 +16,16 @@ class TokenGen(object):
         """ Generate the Auth Token 
             :return: String
         """
-        try:
-            payload = {
-                'exp': dt.datetime.utcnow() + dt.timedelta(days=0, minutes=10080),
-                'iat':dt.datetime.utcnow(),
-                'sub':user_id
-            }
-            return jwt.encode(
-                payload, 
-                os.getenv("SECRET_KEY" or "5PAVHUG4HuYaCjDvMTPBmnHV3bRamRxx"),
-                algorithm='HS256'
-            )
-        except Exception as e:
-            return e
+        payload = {
+            'exp': dt.datetime.utcnow() + dt.timedelta(days=0, minutes=10080),
+            'iat':dt.datetime.utcnow(),
+            'sub':user_id
+        }
+        return jwt.encode(
+            payload, 
+            os.getenv("SECRET_KEY" or "5PAVHUG4HuYaCjDvMTPBmnHV3bRamRxx"),
+            algorithm='HS256'
+        )
 
     @staticmethod
     def decode_auth_token(auth_token):
