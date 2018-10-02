@@ -76,7 +76,7 @@ class UserRegistration(Resource):
                 {
                     "status":"Success",
                     "message":"User created successfully",
-                    "auth_token":str(decode_token).decode("utf-8"),
+                    "auth_token":decode_token.decode("utf-8"),
                     "user_id":user_id
                 }
             ), 201
@@ -112,7 +112,7 @@ class UserLogin(Resource):
                         {
                             "status":"Success",
                             "message":"Successfully logged in.",
-                            "auth_token":str(auth_token).decode("utf-8")
+                            "auth_token":auth_token.decode("utf-8")
                         }
                     ), 200
                 else:
