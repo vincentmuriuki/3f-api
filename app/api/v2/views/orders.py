@@ -100,6 +100,8 @@ class SingleOrders(Resource):
         result = order_models.get_order_by_id(identifier)
         if result:
             status = "Delivered"
+            delivered_date = dt.datetime.now()
+            order_models.update_status(identifier, status, delivered_date)
             delivered_date = str(dt.datetime.now())
             order_models.update_status(identifier, delivered_date)
             return (
