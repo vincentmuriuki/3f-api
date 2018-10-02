@@ -74,7 +74,7 @@ class UserRegistration(Resource):
                 {
                     "status":"Success",
                     "message":"User created successfully",
-                    "auth_token":auth_token.decode(encoding='UTF-8'),
+                    "auth_token":auth_token,
                     "user_id":user_id
                 }
             ), 201
