@@ -4,7 +4,7 @@ import datetime as dt
 
 from flask import Flask, request, jsonify, make_response
 from flask_restful import reqparse, Resource, Api
-from werkzeug.exceptions import Conflict, Unauthorized, BadRequest
+from werkzeug.exceptions import Conflict, Unauthorized, BadRequest, NotFound
 from werkzeug.security import generate_password_hash, check_password_hash
 
 from app.api.v2.models.users import UserModels
@@ -59,22 +59,27 @@ class UserRegistration(Resource):
         username = validate.username_validator(args['username'])
         hashed_password = generate_password_hash(password, method='sha256')
         new_email = user_models.email_exists(email)
-        new_user = {
-            "email":new_email,
-            "username":username,
-            "password":hashed_password,
-            "address":args['address'],
-            "user_type":args['user_type']
-        }
-        user_id = user_models.create_user(new_user)
-        auth_token = token_gen.encode_auth_token(user_id)        
-        return(
-            {
-                "status":"Success",
-                "message":"User created successfully",
-                "auth_token":auth_token.decode()
+        try:
+            new_user = {
+                "email":new_email,
+                "username":username,
+                "password":hashed_password,
+                "address":args['address'],
+                "user_type":args['user_type']
             }
-        ), 201
+            user_id = user_models.create_user(new_user)
+            print(user_id)
+            auth_token = token_gen.encode_auth_token(user_id)        
+            return(
+                {
+                    "status":"Success",
+                    "message":"User created successfully",
+                    "auth_token":auth_token.decode(),
+                    "user_id":user_id
+                }
+            ), 201
+        except Exception as e:
+            print(e)
 
     
 class UserLogin(Resource):
@@ -112,7 +117,7 @@ class UserLogin(Resource):
             else:
                 raise BadRequest("Passwords do not match")
         else:
-            raise BadRequest("The email you provided does not exists")
+            raise NotFound("The email you provided does not exists")
 
 class User(Resource):
     """
@@ -135,21 +140,17 @@ class User(Resource):
                             "user_credentials":{
                                 "user_id":response,
                                 "email":user[2],
-                                "user_type": "User"
+                                "user_type": user[5]
                             }
                         }
-                    )
+                    ), 200
                 
                 return (
                         {
-                            "status":"Success",
-                            "user_credentials":{
-                                "user_id":response,
-                                "email":user[2],
-                                "user_type": "Admin"
-                            }
+                            "status":"Fail",
+                            "message":"No user of that id"
                         }
-                    )
+                    ), 404
             else:
                 return (
                     {
@@ -179,8 +180,8 @@ class UserLogout(Resource):
                 blacklist_token = user_models.token_blacklist(auth_token)
                 return (
                     {
-                        "status":"success",
-                        "message":"You logged out. See you soon",
+                        "status":"Success",
+                        "message":"You logged out",
                         "token_status":"Your token: {} is blacklisted".format(blacklist_token)
                     }
                 ), 200

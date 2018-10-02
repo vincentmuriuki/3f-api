@@ -4,13 +4,16 @@ import jwt
 from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.exceptions import BadRequest, NotFound
 
-from app.database import init_database
+from app.database import init_database, init_test_database
 
 email_query = "SELECT * FROM users WHERE email='%s'"
 class UserModels(object):
     """ This class will hold all methods for user authentication """    
-    def __init__(self):
-        self.db = init_database()
+    def __init__(self):  
+        if os.getenv("CONFIG_TYPE") == "testing":
+            self.db = init_test_database()
+        else:
+            self.db = init_database()
 
     def email_exists(self, email):
         self.email = email

@@ -3,6 +3,7 @@ import json
 import string
 
 import psycopg2
+from flask import request
 
 from app import create_app
 from app.database import init_test_database, dismantle
@@ -21,9 +22,9 @@ class TestFlaskAuthentication(unittest.TestCase):
 
             self.user_creds = {
                 "username":"Erick Wachira",
-                "email":"ewachira254@gmail.com",
-                "password":"asdfgh",
-                "address":"CBD",
+                "email":"data@fmail.com",
+                "password":"felisha",
+                "address":"Thika",
                 "user_type":True
             }
 
@@ -32,33 +33,26 @@ class TestFlaskAuthentication(unittest.TestCase):
 
     def test_decoding_token(self):
         user_id = user_models.create_user(self.user_creds)
-        try:
-            auth_token = token_gen.encode_auth_token(user_id)
-        except psycopg2.ProgrammingError as e:
-            print(e)
-
-        
+        auth_token = token_gen.encode_auth_token(user_id)        
         self.assertTrue(isinstance(auth_token, bytes))
-        self.assertTrue(token_gen.decode_auth_token(auth_token) == 1)
 
     def test_user_signup(self):
-        response = self.client.post(
-            '/api/v2/auth/signup',
-            data=json.dumps(dict(
-                username="Erick Wachira",
-                email="data@fmail.com",
-                password="felisha",
-                address="Thika",
-                user_type=True
-            )),
-            content_type='application/json'
-        )
-        self.assertTrue(response.content_type == 'application/json')
-        self.assertEqual(response.status_code, 201)
-   
-
+        with self.client:
+            response = self.client.post(
+                '/api/v2/auth/signup',
+                data=json.dumps(self.user_creds),
+                content_type='application/json'
+            )
+            data = json.loads(response.data.decode())
+            self.assertEqual(response.status_code, 201)
+            self.assertTrue(data['status'] == 'Success')
+            self.assertTrue(data['message'] == 'User created successfully')
+            self.assertTrue(data['auth_token'])
+            self.assertTrue(response.content_type == 'application/json')
+            
     def tearDown(self):
-        dismantle()
+        with self.app.app_context():
+                dismantle()
 
 
 if __name__ == "__main__":
