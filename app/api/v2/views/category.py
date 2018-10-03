@@ -4,7 +4,9 @@ from flask_restful import Resource
 
 from app.api.v2.models.category import CategoryModels
 from app.api.v2.helpers.helpers import check_admin, auth_required
+from app.api.v2.validators.validators import Validators
 
+validator = Validators()
 category_models = CategoryModels()
 
 class Categories(Resource):
@@ -12,6 +14,7 @@ class Categories(Resource):
     @check_admin
     def get(self):
         data = category_models.get_all_categories()
+        data = validator.check_no_items(data)
         return (
             {
                 "status":"Success",

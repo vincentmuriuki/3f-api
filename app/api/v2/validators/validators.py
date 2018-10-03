@@ -33,4 +33,18 @@ class Validators(object):
                 raise BadRequest("Username should not contain digits")
             else:
                 return self.username
+
+    def number_not_negative(self, value):
+        if value < 0:
+            raise BadRequest("Your id is a negative number")
+        else:
+            return value
+
+    def check_no_items(self, value):
+        if len(value) == 0:
+            items = "Nothing yet"
+            return items
+        else:
+            items = value
+            return items
                 

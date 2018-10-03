@@ -9,10 +9,12 @@ from app.api.v2.helpers.token import TokenGen
 from app.api.v2.models.orders import OrderModels
 from app.api.v2.helpers.helpers import auth_required, check_admin
 from app.api.v2.helpers.serializer import Serializers
+from app.api.v2.validators.validators import Validators
 
 serialize = Serializers()
 order_models = OrderModels()
 token_gen = TokenGen()
+validator = Validators()
 
 class AdminOrders(Resource):
     """ This will handle admin related functions on orders as a whole """
@@ -48,17 +50,25 @@ class OrdersMain(Resource):
         user_id = token_gen.decode_auth_token(auth_token)
         orders_result = order_models.find_order_by_user_id(user_id)
         orders = []
-        if orders_result:
-            for u in orders_result:
-                order = serialize.serialize_order(u)
-                orders.append(order)
+        if len(orders_result) != 0:
+            if orders_result:
+                for u in orders_result:
+                    order = serialize.serialize_order(u)
+                    orders.append(order)
 
-        return (
-            {
-                "status":"Success",
-                "orders":orders
-            }
-        ), 200
+            return (
+                {
+                    "status":"Success",
+                    "orders":orders
+                }
+            ), 200
+        else:
+            return (
+                {
+                    "status":"Success",
+                    "message":"You haven't made any orders yet"
+                }
+            ), 200
       
     @auth_required
     def post(self):
@@ -110,8 +120,9 @@ class OrdersMain(Resource):
         ), 201
 class SingleOrders(Resource):
     """ This class will handle single orders made """
-    @auth_required
+    @check_admin
     def get(self, identifier):
+        identifier = validator.number_not_negative(identifier)
         result = order_models.get_order_by_id(identifier)
         if result:
             print(result)
@@ -136,6 +147,7 @@ class SingleOrders(Resource):
             raise NotFound("Order of that identifier not found")
     @check_admin
     def put(self, identifier):
+        identifier = validator.number_not_negative(identifier)
         result = order_models.get_order_by_id(identifier)
         if result:
             status = "Delivered"
@@ -153,6 +165,7 @@ class UserOrders(Resource):
     """ This holds the endpoint for getting orders made by a specific user"""
     @check_admin
     def get(self, identifier):
+        identifier = validator.number_not_negative(identifier)
         result = order_models.find_order_by_user_id(identifier)
         orders = []
         if result:

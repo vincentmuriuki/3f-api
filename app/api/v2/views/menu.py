@@ -6,13 +6,16 @@ from flask import request
 
 from app.api.v2.models.menu import MenuModels
 from app.api.v2.helpers.helpers import check_admin
+from app.api.v2.validators.validators import Validators
 
+validator = Validators()
 menu_models = MenuModels()
 
 class Menu(Resource):
     """ This class holds the endpoints for meals """
     def get(self):
         menu = menu_models.get_menu()
+        menu = validator.check_no_items(menu)
         return (
             {
                 "menu":menu
