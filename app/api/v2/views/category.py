@@ -34,6 +34,7 @@ class Categories(Resource):
                 }
             ), 201
         except Exception as e:
+            print(e)
             raise BadRequest("Something just isnt right: {}".format(e))        
 
     @check_admin

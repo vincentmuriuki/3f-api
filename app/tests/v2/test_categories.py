@@ -27,14 +27,6 @@ class TestFlaskCategory(unittest.TestCase):
 
     def test_category_creation(self):
         """ This will test the category creation """
-        response = self.client.post('/api/v2/admin/categories', 
-            data=json.dumps(self.category_data), 
-            content_type='application/json'
-        )
-        self.assertEqual(response.status_code, 201)
-
-    def test_getting_categories(self):
-        """ This will test the getting of all categories """
         with self.client:
             register_response = self.client.post(
                 '/api/v2/auth/signup',
@@ -47,16 +39,12 @@ class TestFlaskCategory(unittest.TestCase):
             self.assertTrue(data['message'] == 'User created successfully')
             self.assertTrue(data['auth_token'])
             self.assertTrue(register_response.content_type == 'application/json')
-            response = self.client.get(
-                '/api/v2/admin/categories',
-                header=dict(
-                Authorization=json.loads(
-                    register_response.data.decode()
-                    )['auth_token']
-                ),
-                content_type='application/json'
+            response = self.client.post('/api/v2/admin/categories', 
+                data=json.dumps(self.category_data), 
+                content_type="application/json",
+                headers={"Authorization":"Bearer " + data['auth_token']}
             )
-            self.assertEqual(response.status_code, 200)
+            self.assertEqual(response.status_code, 201)
 
     def tearDown(self):
         with self.app.app_context():

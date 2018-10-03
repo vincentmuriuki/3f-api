@@ -122,8 +122,8 @@ class User(Resource):
         if auth_token:
             response = token_gen.decode_auth_token(auth_token)
             if not isinstance(response, str):
-                user = user_models.get_user_creds_with_id(user_id=response)
-                if not user[5]:
+                user = user_models.get_user_creds_with_id(response)
+                if user:
                     return (
                         {
                             "status":"Success",
@@ -138,7 +138,7 @@ class User(Resource):
                 return (
                         {
                             "status":"Fail",
-                            "message":"No user of that id"
+                            "message":"No user of that id {}".format(response)
                         }
                     ), 404
             else:
