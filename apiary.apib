@@ -1,80 +1,323 @@
 FORMAT: 1A
-HOST: http://polls.apiblueprint.org/
+HOST: https://fastfoodfast254.herokuapp.com
 
-# wachira_Dev 
+# Fast Food Fast
 
-Polls is a simple API allowing consumers to view polls and vote in them.
+Fast Food Fast is an online food delivery restraurant.
 
-## Questions Collection [/questions]
+## Signup Collection [/api/v2/auth/signup]
 
-### List All Questions [GET]
-
-+ Response 200 (application/json)
-
-        [
-            {
-                "question": "Favourite programming language?",
-                "published_at": "2015-08-05T08:40:51.620Z",
-                "choices": [
-                    {
-                        "choice": "Swift",
-                        "votes": 2048
-                    }, {
-                        "choice": "Python",
-                        "votes": 1024
-                    }, {
-                        "choice": "Objective-C",
-                        "votes": 512
-                    }, {
-                        "choice": "Ruby",
-                        "votes": 256
-                    }
-                ]
-            }
-        ]
-
-### Create a New Question [POST]
-
-You may create your own question using this action. It takes a JSON
-object containing a question and a collection of answers in the
-form of choices.
+### User registration [POST]
 
 + Request (application/json)
 
         {
-            "question": "Favourite programming language?",
-            "choices": [
-                "Swift",
-                "Python",
-                "Objective-C",
-                "Ruby"
-            ]
+            "username":"Marvik Samuel",
+            "email":"datamania@fmail.com",
+            "password":"uptown",
+            "address":"Kayoga",
+            "user_type":true
         }
+        
++ Response 201 (application/json)
+
+        {
+          "status": "Success",
+          "message": "User created successfully",
+          "auth_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE1MzkxNjcyMDIsImlhdCI6MTUzODU2MjQwMiwic3ViIjpbN119.L3KqTTt_s3g1TQ2_BQWHtR7-jr7N9QSs8i-U78UcHJA",
+          "user_id": [
+            7
+          ]
+        }
+
+## Login Collection [/api/v2/auth/login]
+
+### User log in [POST]
+
++ Request (application/json)
+
+        {
+            "email":"datamania@fmail.com",
+            "password":"uptown"
+        }
+        
++ Response 200 (application/json)
+    
+    + Header
+            
+            Location: /auth/login
+    
+    + Body
+    
+            {
+              "status": "Success",
+              "message": "Successfully logged in.",
+              "auth_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE1MzkxNjc0NzYsImlhdCI6MTUzODU2MjY3Niwic3ViIjo3fQ.qjhSxsVCAI1Bsy_H6v0I8FMhe5nIojKTwBaxIk0IHLQ"
+            }
+
+
+
+
+## Profile Collection [/api/v2/auth/profile]
+
+### Get user profile details [GET]
+
++ Response 200 (application/json)
+
+    + Header 
+            
+            Authorization:eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE1MzkxNjc0NzYsImlhdCI6MTUzODU2MjY3Niwic3ViIjo3fQ.qjhSxsVCAI1Bsy_H6v0I8FMhe5nIojKTwBaxIk0IHLQ
+    
+    + Body
+            
+            {
+                "status": "Success",
+                "user_credentials": {
+                    "user_id": 7,
+                    "email": "datamania@fmail.com",
+                    "user_type": true
+                }
+            }
+ 
+
+## Menu Collection [/api/v2/menu]
+
+### Get the menu [GET]
+
++ Response 200 (application/json)
+
+        {
+            "menu":"Nothing yet"
+        }
+
+### Add a meal [POST]
+
++ Request (application/json)
+
+    + Headers
+            
+            Authorization: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE1MzkxNjc0NzYsImlhdCI6MTUzODU2MjY3Niwic3ViIjo3fQ.qjhSxsVCAI1Bsy_H6v0I8FMhe5nIojKTwBaxIk0IHLQ
+    
+    + Body 
+    
+            {
+                "product_name":"Magarita Pizza",
+                "description":"Pizza Tasty mia",
+                "price":500,
+                "cateogry_name":"Baked"
+            }
+        
++ Response 201 (application/json)
+
+    + Headers 
+            
+            Authorization: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE1MzkxNjc0NzYsImlhdCI6MTUzODU2MjY3Niwic3ViIjo3fQ.qjhSxsVCAI1Bsy_H6v0I8FMhe5nIojKTwBaxIk0IHLQ
+    
+    + Body
+    
+            {
+                "status":"Success",
+                "message":"Meal added to menu"
+            }
+        
+
+## Category Collection [/api/v2/menu]
+
+### Get categories [GET]
+
++ Response 200 (application/json)
+    
+    + Headers 
+            
+            Authorization: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE1MzkxNjc0NzYsImlhdCI6MTUzODU2MjY3Niwic3ViIjo3fQ.qjhSxsVCAI1Bsy_H6v0I8FMhe5nIojKTwBaxIk0IHLQ
+    
+    + Body
+    
+            {
+                "status":"Success",
+                "message":"Nothing yet"
+            }
+            
+            
+
+### Create a category [POST]
+
++ Request (application/json)
+    
+    + Headers 
+            
+            Authorization: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE1MzkxNjc0NzYsImlhdCI6MTUzODU2MjY3Niwic3ViIjo3fQ.qjhSxsVCAI1Bsy_H6v0I8FMhe5nIojKTwBaxIk0IHLQ
+            
+    + Body
+            {
+                "category_name":"Baked"
+            }
+        
++ Response 201 (application/json)
+
+    + Headers
+            
+            Authorization: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE1MzkxNjc0NzYsImlhdCI6MTUzODU2MjY3Niwic3ViIjo3fQ.qjhSxsVCAI1Bsy_H6v0I8FMhe5nIojKTwBaxIk0IHLQ
+            
+    + Body
+
+            {
+                "status":"Success",
+                "message":"You successfully created a meal category"
+            }
+        
+## User Orders Collection [/api/v2/admin/orders]
+
+### Get all orders made (admin) [GET]
+
++ Response 200 (application/json)
+
+    + Headers
+    
+            Authorization: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE1MzkxNjc0NzYsImlhdCI6MTUzODU2MjY3Niwic3ViIjo3fQ.qjhSxsVCAI1Bsy_H6v0I8FMhe5nIojKTwBaxIk0IHLQ
+            
+    + Body
+    
+            {
+                "status":"Success",
+                "message":"Nothing yet"
+            }
+            
+
+            
+### Place an order made (user) [POST]
+
++ Request (application/json)
+
+    + Headers 
+            
+            Authorization: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE1MzkxNjc0NzYsImlhdCI6MTUzODU2MjY3Niwic3ViIjo3fQ.qjhSxsVCAI1Bsy_H6v0I8FMhe5nIojKTwBaxIk0IHLQ
+            
+    + Body
+    
+            {
+                "meal":"Magarita Pizza",
+                "price":1200,
+                "qty":2,
+                "description":"Less fats used"
+            }
+            
++ Response 201 (application/json)
+
+    + Headers
+            
+            Authorization: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE1MzkxNjc0NzYsImlhdCI6MTUzODU2MjY3Niwic3ViIjo3fQ.qjhSxsVCAI1Bsy_H6v0I8FMhe5nIojKTwBaxIk0IHLQ
+            
+    + Body
+    
+            {
+                "status":"Success",
+                "message":"Successfully placed the order"
+            }
+            
+            
+            
+
+            
+### Get orders made by user (user) [GET]
+
++ Response 200 (application/json)
+
+    + Headers 
+    
+            Authorization: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE1MzkxNjc0NzYsImlhdCI6MTUzODU2MjY3Niwic3ViIjo3fQ.qjhSxsVCAI1Bsy_H6v0I8FMhe5nIojKTwBaxIk0IHLQ
+            
+    + Body
+    
+            {
+                "status":"Success",
+                "orders":[
+                    "order_id":1,
+                    "user_id":1,
+                    "meal":"Magarita Pizza",
+                    "price":1200,
+                    "qty":2,
+                    "total":2400,
+                    "description":"Less fats used"
+                ]
+            }
+            
+ 
+ 
+
+## Specific Orders Collection [/api/orders/1]
+
+### Update order status (admin) [PUT]
+
++ Request (application/json)
+
+    + Headers
+            
+            Authorization: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE1MzkxNjc0NzYsImlhdCI6MTUzODU2MjY3Niwic3ViIjo3fQ.qjhSxsVCAI1Bsy_H6v0I8FMhe5nIojKTwBaxIk0IHLQ
+            
+    + Body
+    
+            {
+                "status":"Delivered"
+            }
 
 + Response 201 (application/json)
 
     + Headers
+    
+            Authorization: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE1MzkxNjc0NzYsImlhdCI6MTUzODU2MjY3Niwic3ViIjo3fQ.qjhSxsVCAI1Bsy_H6v0I8FMhe5nIojKTwBaxIk0IHLQ
+            
+    + Body
+    
+            {
+                "status":"Success",
+                "message":"Order delivered"
+            }
+            
 
-            Location: /questions/2
+
+### Get specific order by id (admin) [GET]
+
++ Response 200(application/json)
+
+    + Headers
+    
+            Authorization: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE1MzkxNjc0NzYsImlhdCI6MTUzODU2MjY3Niwic3ViIjo3fQ.qjhSxsVCAI1Bsy_H6v0I8FMhe5nIojKTwBaxIk0IHLQ
+            
+    + Body
+            
+            {
+                "status":"Success",
+                "message":"Order found",
+                "order":order
+            }
+            
+            
+            
+
+            
+## User Specific Orders Made [/api/v2/users/orders/1]
+
+### Get orders made by a specific user
+
++ Response 200 (application/json)
+
+    + Headers 
+            
+            Authorization: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE1MzkxNjc0NzYsImlhdCI6MTUzODU2MjY3Niwic3ViIjo3fQ.qjhSxsVCAI1Bsy_H6v0I8FMhe5nIojKTwBaxIk0IHLQ
 
     + Body
-
+    
             {
-                "question": "Favourite programming language?",
-                "published_at": "2015-08-05T08:40:51.620Z",
-                "choices": [
+                "status":"Success",
+                "orders":[
                     {
-                        "choice": "Swift",
-                        "votes": 0
-                    }, {
-                        "choice": "Python",
-                        "votes": 0
-                    }, {
-                        "choice": "Objective-C",
-                        "votes": 0
-                    }, {
-                        "choice": "Ruby",
-                        "votes": 0
+                        "order_id":1,
+                        "user_id":1,
+                        "meal":"Magarita Pizza",
+                        "price":1200,
+                        "qty":2,
+                        "total":2400,
+                        "description":"Less fats used"
                     }
                 ]
-            }
