@@ -11,6 +11,8 @@ class Validators(object):
         if not re.match(r'^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,4})$',
             email):
             raise BadRequest("Please provide a valid email")
+        elif len(email) < 10:
+            raise BadRequest("Email is too short")
         else:
             return email
 
