@@ -166,4 +166,4 @@ class UserOrders(Resource):
                 }
             ), 200
         else:
-            raise NotFound("The user has not not placed any order")
+            raise NotFound("The user has not placed any order")

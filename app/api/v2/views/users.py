@@ -87,13 +87,24 @@ class UserRegistration(Resource):
 class UserLogin(Resource):
     """ This class holds the endpoint for user login """
     def post(self):
-        request_data = request.get_json() 
-
-        status = user_models.get_login_email(request_data.get('email'))
+        parser = reqparse.RequestParser()
+        parser.add_argument(
+            'email',
+            type=str,
+            required=True,
+            help="Well you cannot log in with no email provided"
+        )
+        parser.add_argument(
+            'password',
+            type=str,
+            required=True,
+            help="Well you need a password, dont you!!!"
+        )
+        args = parser.parse_args()
+        status = user_models.get_login_email(args['email'])
         if status:
-            if check_password_hash(status[3], request_data.get('password')):
+            if check_password_hash(status[3], args['password']):
                 auth_token = token_gen.encode_auth_token(status[0])            
-
                 if auth_token:
                     return (
                         {
@@ -103,7 +114,7 @@ class UserLogin(Resource):
                         }
                     ), 200
                 else:
-                    raise BadRequest("Token not created")
+                    raise NotFound("Token not created")
             else:
                 raise BadRequest("Passwords do not match")
         else:

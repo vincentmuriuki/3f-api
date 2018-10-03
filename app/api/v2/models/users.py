@@ -15,11 +15,12 @@ class UserModels(object):
         else:
             self.db = init_database()
 
+        self.curr = self.db.cursor()
+
     def email_exists(self, email):
         self.email = email
-        curr = self.db.cursor()
-        curr.execute(email_query % self.email)
-        email_found = curr.fetchone()
+        self.curr.execute(email_query % self.email)
+        email_found = self.curr.fetchone()
         if email_found:
             raise BadRequest("Email in use")
         else:
@@ -31,56 +32,48 @@ class UserModels(object):
         self.address = data['address']
         self.password = data['password']
         self.user_type = data['user_type']
-
-        curr = self.db.cursor()
-        curr.execute("""INSERT INTO users (username, email, password, address, user_type) 
+        self.curr.execute("""INSERT INTO users (username, email, password, address, user_type) 
         VALUES (
             '%s', '%s', '%s', '%s', '%s'
         ) RETURNING user_id
         """ % (self.username, self.email, self.password, self.address, self.user_type))
-        user_id = curr.fetchone()
+        user_id = self.curr.fetchone()
         self.db.commit()
         return user_id
 
     def get_login_email(self, email):
-        curr = self.db.cursor()
-        curr.execute(email_query % email)
-        user_in = curr.fetchone()
+        self.curr.execute(email_query % email)
+        user_in = self.curr.fetchone()
         return user_in
 
     def get_user_password(self, email):
-        curr = self.db.cursor()
-        curr.execute(email_query % email)
-        hashed_password = curr.fetchone()[3]
+        self.curr.execute(email_query % email)
+        hashed_password = self.curr.fetchone()[3]
         return hashed_password
 
     def get_user_id(self, email):
-        curr = self.db.cursor()
-        curr.execute(email_query % email)
-        user_id = curr.fetchone()[0]
+        self.curr.execute(email_query % email)
+        user_id = self.curr.fetchone()[0]
         return user_id
 
     def get_user_creds_with_id(self, user_id):
-        curr = self.db.cursor()
-        curr.execute("SELECT * FROM users WHERE user_id='%s'" % user_id)
-        user_details = curr.fetchone()
+        self.curr.execute("SELECT * FROM users WHERE user_id='%s'" % user_id)
+        user_details = self.curr.fetchone()
         return user_details
 
     def token_blacklist(self, token):
         """
         This stores tokens used by users
         """
-        curr = self.db.cursor()
-        curr.execute("""INSERT INTO blacklist (user_tokens) VALUES ('%s')""" % token)
+        self.curr.execute("""INSERT INTO blacklist (user_tokens) VALUES ('%s')""" % token)
         self.db.commit()
         return token
     def check_token_blacklist(self, token):
         """
         This checks for a blacklisted token
         """
-        curr = self.db.cursor()
-        curr.execute("SELECT * FROM blacklist WHERE user_tokens='%s'" % (token))
-        token_blacklisted = curr.fetchone()
+        self.curr.execute("SELECT * FROM blacklist WHERE user_tokens='%s'" % (token))
+        token_blacklisted = self.curr.fetchone()
         return token_blacklisted
 
         

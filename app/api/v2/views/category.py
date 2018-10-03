@@ -27,15 +27,17 @@ class Categories(Resource):
             if check_results:
                 raise BadRequest("A category of the name exists already")                
             category_models.create_category(category_name)
-            return (
-                {
-                    "status":"Success",
-                    "message":"Category: {}, has been created".format(category_name)
-                }
-            ), 201
         except Exception as e:
             print(e)
-            raise BadRequest("Something just isnt right: {}".format(e))        
+            raise BadRequest("Something just isnt right: {}".format(e))     
+
+        
+        return (
+            {
+                "status":"Success",
+                "message":"Category: {}, has been created".format(category_name)
+            }
+        ), 201   
 
     @check_admin
     def delete(self):

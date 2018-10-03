@@ -43,6 +43,7 @@ def init_test_database():
     try:
         for query in queries:
             cursor.execute(query)
+            print("Success jjbjhbujhhuhjhujjhnnn ")
         conn.commit()
         return conn
     except Exception as e:
