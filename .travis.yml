@@ -1,12 +1,5 @@
 language: python
 
-env:
-  global:
-    DATABASE_URL="dbname='fastfoodfast' host='localhost' port='5432' user='postgres' password='1234'"
-    DATABASE_TEST_URL="dbname='fastfoodtest' host='localhost' port='5432' user='postgres' password='1234'"
-    CONFIG_TYPE="testing"
-    SECRET_KEY="5PAVHUG4HuYaCjDvMTPBmnHV3bRamRxx"
-
 python: 
   - "3.5"
   - "3.6"
@@ -24,7 +17,6 @@ addons:
 
 before_script:
   - psql -c 'CREATE DATABASE fastfoodtest' -U postgres
-  - psql -c 'CREATE DATABASE fastfoodfast' -U postgres
   - psql -c "GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public to postgres;" -U postgres
 
 script:
