@@ -1,5 +1,5 @@
 # import dependencies
-from flask import Flask, request, abort
+from flask import Flask, request, abort, redirect
 from flask_restful import Resource, Api, reqparse
 import datetime as dt
 import os
@@ -147,8 +147,7 @@ class OrdersManipulation(Resource):
 class LandingPage(Resource):
     """ This class handles the endpoint for the landing page """
     def get(self):        
-        return """Copy this link to visit my git repo for the docs: https://github.com/tesh254/3f-api """
-
+        return redirect("https://wachiradev.docs.apiary.io/#")
 
 
 
