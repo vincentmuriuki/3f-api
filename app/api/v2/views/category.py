@@ -14,6 +14,7 @@ class Categories(Resource):
         data = category_models.get_all_categories()
         return (
             {
+                "status":"Success",
                 "categories":data
             }
         ), 200
@@ -28,6 +29,7 @@ class Categories(Resource):
             category_models.create_category(category_name)
             return (
                 {
+                    "status":"Success",
                     "message":"Category: {}, has been created".format(category_name)
                 }
             ), 201

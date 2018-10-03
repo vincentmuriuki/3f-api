@@ -23,7 +23,7 @@ class TokenGen(object):
         }
         return jwt.encode(
             payload, 
-            os.getenv("SECRET_KEY" or "5PAVHUG4HuYaCjDvMTPBmnHV3bRamRxx"),
+            os.getenv("SECRET_KEY") or "5PAVHUG4HuYaCjDvMTPBmnHV3bRamRxx",
             algorithm='HS256'
         )
 

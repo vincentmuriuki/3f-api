@@ -87,24 +87,11 @@ class UserRegistration(Resource):
 class UserLogin(Resource):
     """ This class holds the endpoint for user login """
     def post(self):
-        parser = reqparse.RequestParser()
-        parser.add_argument(
-            'email', 
-            type=str,
-            required=True,
-            help="An email is required to login",
-        )
-        parser.add_argument(
-            'password', 
-            type=str,
-            required=True,
-            help="A password is required"
-        )   
-        args = parser.parse_args()  
+        request_data = request.get_json() 
 
-        status = user_models.get_login_email(args['email'])
+        status = user_models.get_login_email(request_data.get('email'))
         if status:
-            if check_password_hash(status[3], args['password']):
+            if check_password_hash(status[3], request_data.get('password')):
                 auth_token = token_gen.encode_auth_token(status[0])            
 
                 if auth_token:

@@ -28,6 +28,11 @@ class TestFlaskAuthentication(unittest.TestCase):
                 "user_type":True
             }
 
+            self.login_creds = {
+                "email":"data@fmail.com",
+                "password":"felisha"
+            }
+
             with self.app.app_context():
                 self.db = init_test_database()
 
@@ -38,18 +43,18 @@ class TestFlaskAuthentication(unittest.TestCase):
 
     def test_user_signup(self):
         with self.client:
-            response = self.client.post(
+            register_response = self.client.post(
                 '/api/v2/auth/signup',
                 data=json.dumps(self.user_creds),
                 content_type='application/json'
             )
-            data = json.loads(response.data.decode())
-            self.assertEqual(response.status_code, 201)
+            data = json.loads(register_response.data.decode())
+            self.assertEqual(register_response.status_code, 201)
             self.assertTrue(data['status'] == 'Success')
             self.assertTrue(data['message'] == 'User created successfully')
             self.assertTrue(data['auth_token'])
-            self.assertTrue(response.content_type == 'application/json')
-            
+            self.assertTrue(register_response.content_type == 'application/json')
+
     def tearDown(self):
         with self.app.app_context():
                 dismantle()
