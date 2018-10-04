@@ -22,7 +22,7 @@ def create_app(configuration):
     api.add_resource(UserRegistration, '/api/v2/auth/signup')    
     api.add_resource(UserLogin, '/api/v2/auth/login')
     api.add_resource(UserLogout, '/api/v2/auth/logout')
-    api.add_resource(User, '/api/v2/auth/profile')
+    api.add_resource(User, '/api/v2/auth/profile') 
     api.add_resource(Categories, '/api/v2/admin/categories')
     api.add_resource(Menu, '/api/v2/menu')
     api.add_resource(SingleOrders, '/api/v2/orders/<int:identifier>')

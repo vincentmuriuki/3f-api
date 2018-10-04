@@ -32,11 +32,23 @@ class BaseTestCase(unittest.TestCase):
             "address":"Thika",
             "user_type":True
         }
+
+        self.order_creds = {
+            {
+                "meal":"Magarita Pizza",
+                "qty":2,
+                "price":1200,
+                "description":"Less fats used"
+            }
+        }
         
         self.login_creds = {
             "email":"data@fmail.com",
             "password":"felisha"
         }
+
+        self.order_id = 1
+        self.user_id = 1
 
         self.response = self.client.post(
             '/api/v2/auth/signup',
@@ -45,11 +57,11 @@ class BaseTestCase(unittest.TestCase):
         )
 
     def create_user(self):
-        self.client.post(
-            '/api/v2/auth/signup',
-            data=json.dumps(self.user_creds),
-            content_type="application/json"
-        )        
+        """ Create user to get token for authorization """
+        user_id = user_models.create_user(self.user_creds)
+        token = token_gen.encode_auth_token(user_id)
+        token = token.decode()
+        return token
 
     def tearDown(self):
         with self.app.app_context():

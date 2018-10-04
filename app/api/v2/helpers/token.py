@@ -38,10 +38,11 @@ class TokenGen(object):
         try:
             payload = jwt.decode(auth_token, os.getenv('SECRET_KEY' or "5PAVHUG4HuYaCjDvMTPBmnHV3bRamRxx"))
             is_blacklisted_token = user_models.check_token_blacklist(auth_token)
-            if is_blacklisted_token:
-                return "Token cannot be used. Log in to get one"                
-            return payload['sub']
         except jwt.ExpiredSignatureError:
             return 'Token expired'
         except jwt.InvalidTokenError:
             return 'Token Invalid'
+
+        if is_blacklisted_token:
+            return "Token cannot be used. Log in to get one"                
+        return payload['sub']

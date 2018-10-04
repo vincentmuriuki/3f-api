@@ -21,7 +21,9 @@ class TestFlaskAuthentication(BaseTestCase):
         self.assertTrue(isinstance(auth_token, bytes))
 
     def test_user_signup(self):
+        """ Test the registration of a user """
         self.assertEqual(self.response.status_code, 201)
+        self.assertTrue(self.response.json['auth_token'])
         self.assertTrue(self.response.content_type == "application/json")
 
 if __name__ == "__main__":
