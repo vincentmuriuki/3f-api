@@ -26,12 +26,12 @@ class UserModels(Database):
         self.email = data['email']
         self.address = data['address']
         self.password = data['password']
-        self.user_type = data['user_type']
-        self.cursor.execute("""INSERT INTO users (username, email, password, address, user_type) 
+        self.is_admin = data['is_admin']
+        self.cursor.execute("""INSERT INTO users (username, email, password, address, is_admin) 
         VALUES (
             '%s', '%s', '%s', '%s', '%s'
         ) RETURNING user_id
-        """ % (self.username, self.email, self.password, self.address, self.user_type))
+        """ % (self.username, self.email, self.password, self.address, self.is_admin))
         user_id = self.cursor.fetchone()
         self.store()
         return user_id

@@ -11,10 +11,10 @@ class Table_Manipulation(object):
 
     def __init__(self):
         try:
-            self.conn = p.connect(os.getenv("DATABASE_URL"))
+            self.conn = p.connect(os.getenv("DATABASE_TEST_URL"))
             print("""
             ---------------------------------------
-            | Connected to the main db|
+            | Connected to the test db|
             ---------------------------------------
             """)
         except (Exception, p.DatabaseError) as error:
@@ -27,7 +27,6 @@ class Table_Manipulation(object):
             self.curr.execute(query)
 
         self.conn.commit()
-        self.curr.close()
 
     def drop(self):
         users = "DROP TABLE IF EXISTS users"
@@ -35,18 +34,18 @@ class Table_Manipulation(object):
         meals = "DROP TABLE IF EXISTS meals"
         orders = "DROP TABLE IF EXISTS orders"
         blacklist = "DROP TABLE IF EXISTS blacklist"
-        queries = [users, category, meals, orders, blacklist]
+        queries = [orders, blacklist, users, meals, category]
 
         for query in queries:
             self.curr.execute(query)
             print("Dropped query: {}".format(query))
 
         self.conn.commit()
-        self.curr.close()
 
 
 
 db = Table_Manipulation()
 
 if __name__ == "__main__":
+    db.drop()
     db.create_tables_to_be_used()

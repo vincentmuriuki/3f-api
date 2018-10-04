@@ -51,4 +51,4 @@ CREATE TABLE IF NOT EXISTS blacklist (
 ) 
 """
 
-queries = [category_table, users_table, meals_table, orders_table, blacklist]
+queries = [users_table, category_table, meals_table, orders_table, blacklist]

@@ -49,7 +49,7 @@ class UserRegistration(Resource):
             help="We need an address"
         )
         parser.add_argument(
-            'user_type',
+            'is_admin',
             type=bool,
             required=False,
             default=False
@@ -66,22 +66,17 @@ class UserRegistration(Resource):
                 "username":username,
                 "password":hashed_password,
                 "address":args['address'],
-                "user_type":args['user_type']
+                "is_admin":args['is_admin']
             }
-            user_id = user_models.create_user(new_user)
-            print(user_id)
-            auth_token = token_gen.encode_auth_token(user_id)  
-            decode_token = auth_token    
+            user_id = user_models.create_user(new_user)  
             return(
                 {
                     "status":"Success",
-                    "message":"User created successfully",
-                    "auth_token":decode_token.decode("utf-8"),
-                    "user_id":user_id
+                    "message":"User created successfully"
                 }
             ), 201
         except Exception as e:
-            print(e)
+            raise BadRequest("Something is wrong maybe it is this {} ".format(e))
 
     
 class UserLogin(Resource):
@@ -188,7 +183,7 @@ class UserLogout(Resource):
                 ), 200
             return (
                 {
-                    "message":"Something went wrong"
+                    "message":"You logged out, please login to start a new session"
                 }
             ), 401
         return (
