@@ -4,31 +4,24 @@ import json
 from werkzeug.exceptions import NotFound, BadRequest, MethodNotAllowed
 from flask import request
 
-from app.database import init_database, init_test_database
+from app.api.v2.models.db_vars import Database
 
-class CategoryModels(object):
+class CategoryModels(Database):
     def __init__(self):
-        if os.getenv("CONFIG_TYPE") == "testing":
-            self.db = init_test_database()
-        else:
-            self.db = init_database()
-
-        self.curr = self.db.cursor()
+        """ This is the model for the menu which holds all meals """
+        super().__init__()
 
     def create_category(self, category_name):
-        self.curr = self.db.cursor()
-        self.curr.execute("INSERT INTO categories (category_name) VALUES ('%s')" % (category_name))
-        self.db.commit()
+        self.cursor.execute("INSERT INTO categories (category_name) VALUES ('%s')" % (category_name))
+        self.store()
 
     def get_specific_category(self, category_name):
-        self.curr = self.db.cursor()
-        self.curr.execute("SELECT * FROM categories WHERE category_name='%s'" % category_name)
-        found_category = self.curr.fetchone()[1]
-        self.db.commit()
+        self.cursor.execute("SELECT * FROM categories WHERE category_name='%s'" % category_name)
+        found_category = self.cursor.fetchone()[1]
+        self.store()
         return found_category
     
     def get_all_categories(self):
-        self.curr = self.db.cursor()
-        self.curr.execute("SELECT * FROM categories")
-        categories = self.curr.fetchall()
+        self.cursor.execute("SELECT * FROM categories")
+        categories = self.cursor.fetchall()
         return categories

@@ -12,8 +12,9 @@ from app.api.v2.views.menu import Menu
 
 def create_app(configuration):
 
-    app = Flask(__name__)
+    app = Flask(__name__, instance_path="/instance")
     app.config.from_object(app_config[configuration])
+    # app.config.from_pyfile("config.py")
     api = Api(app)
     api.add_resource(LandingPage, '/')
     api.add_resource(Orders, '/api/v1/orders')
