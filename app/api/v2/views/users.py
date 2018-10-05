@@ -11,6 +11,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from app.api.v2.models.users import UserModels
 from app.api.v2.validators.validators import Validators
 from app.api.v2.helpers.token import TokenGen
+from app.api.v2.helpers.helpers import check_admin
 
 user_models = UserModels()
 validate = Validators()
@@ -49,10 +50,10 @@ class UserRegistration(Resource):
             help="We need an address"
         )
         parser.add_argument(
-            'user_type',
+            'is_admin',
             type=bool,
-            required=False,
-            default=False
+            required=True,
+            help="You need to specify your role"
         )
         args = parser.parse_args()
         email = validate.email_validator(args['email'])
@@ -60,28 +61,42 @@ class UserRegistration(Resource):
         username = validate.username_validator(args['username'])
         hashed_password = generate_password_hash(password, method='sha256')
         new_email = user_models.email_exists(email)
+        if args['is_admin'] == True:
+            is_admin = user_models.check_admin_in_db()
+            try:
+                new_user = {
+                    "email":new_email,
+                    "username":username,
+                    "password":hashed_password,
+                    "address":args['address'],
+                    "is_admin":is_admin
+                }
+                user_id = user_models.create_user(new_user)  
+                return(
+                    {
+                        "status":"Success",
+                        "message":"User created successfully"
+                    }
+                ), 201
+            except Exception as e:
+                raise BadRequest("Something is wrong maybe it is this {} ".format(e))
         try:
             new_user = {
                 "email":new_email,
                 "username":username,
                 "password":hashed_password,
                 "address":args['address'],
-                "user_type":args['user_type']
+                "is_admin":args['is_admin']
             }
-            user_id = user_models.create_user(new_user)
-            print(user_id)
-            auth_token = token_gen.encode_auth_token(user_id)  
-            decode_token = auth_token    
+            user_id = user_models.create_user(new_user)  
             return(
                 {
                     "status":"Success",
-                    "message":"User created successfully",
-                    "auth_token":decode_token.decode("utf-8"),
-                    "user_id":user_id
+                    "message":"User created successfully"
                 }
             ), 201
         except Exception as e:
-            print(e)
+            raise BadRequest("Something is wrong maybe it is this {} ".format(e))
 
     
 class UserLogin(Resource):
@@ -188,7 +203,7 @@ class UserLogout(Resource):
                 ), 200
             return (
                 {
-                    "message":"Something went wrong"
+                    "message":"You logged out, please login to start a new session"
                 }
             ), 401
         return (
@@ -196,6 +211,36 @@ class UserLogout(Resource):
                 "message":"Token not data"
             }
         ), 400
+
+class UserUpgrade(Resource):
+    """ Update a user to an admin api endpoints """
+    @check_admin
+    def post(self):
+        parser = reqparse.RequestParser()
+        parser.add_argument(
+            "email",
+            type=str,
+            required=True,
+            help="Enter the email for user role upgrade"
+        )
+        args = parser.parse_args()
+        email = validate.email_validator(args['email'])
+        if email:
+            result = user_models.update_user_role(email)
+            if result:
+                return (
+                    {
+                        "status":"Success",
+                        "message":"User of email {} status has been updated".format(email)
+                    }
+                ), 201
+            else:
+                return (
+                    {
+                        "status":"The email does not exist, check spelling"
+                    }
+                ), 401
+
 
 
 

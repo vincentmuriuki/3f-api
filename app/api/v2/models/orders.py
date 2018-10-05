@@ -1,36 +1,31 @@
 import os
+import datetime as dt
 
 from flask import request
 from werkzeug.exceptions import BadRequest
 
-from app.database import init_database, init_test_database
+from app.api.v2.models.db_vars import Database
 from app.api.v2.helpers.token import TokenGen
 
 token_gen = TokenGen()
 
-class OrderModels(object):
+class OrderModels(Database):
     """ This will hold all order models """
-
     def __init__(self):
-        if os.getenv("CONFIG_TYPE") == "testing":
-            self.db = init_test_database()
-        else:
-            self.db = init_database()
-
-        self.curr = self.db.cursor()
-
-    def get_orders(self):
+        super().__init__()
         
-        self.curr.execute("SELECT * FROM orders")
-        result = self.curr.fetchall()
-        self.db.commit()
+    def get_orders(self):
+        """ Get orders made as a whole """
+        self.cursor.execute("SELECT * FROM orders")
+        result = self.cursor.fetchall()
+        self.store()
         return result
 
     def get_order_by_id(self, order_id):
-        
-        self.curr.execute("SELECT * FROM orders WHERE order_id='%s'" % order_id)
-        result = self.curr.fetchone()
-        self.db.commit()
+        """ Get an order by id """
+        self.cursor.execute("SELECT * FROM orders WHERE order_id='%s'" % order_id)
+        result = self.cursor.fetchone()
+        self.store()
         return result
 
     def add_order(self, meal, qty, ordered_date, price, status, description, amount):
@@ -42,26 +37,24 @@ class OrderModels(object):
             raise BadRequest("Token absences please ")
 
         user_id = token_gen.decode_auth_token(auth_token)
-
         
-        self.curr.execute("""
+        self.cursor.execute("""
         INSERT INTO orders (user_id, meal, ordered_date, price, qty, amount, 
         status, description) VALUES ('%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s')
         """ % (user_id, meal, ordered_date, price, qty, amount, status, description))
-        self.db.commit()
+        self.store()
         
-    def update_status(self, order_id, status, delivered_date):
-        
-        self.curr.execute("""
-        UPDATE orders SET status='%s' AND delivered_date='%s'
-        WHERE order_id='%s'
-        """ % (status, delivered_date,order_id))
-        self.db.commit()
+    def update_status(self, order_id, status):
+        """ Update an order is delivered """
+        self.cursor.execute("""
+        UPDATE orders SET status='{}'
+        WHERE order_id={}
+        """.format(str(status),int(order_id)))
+        self.store()
 
-    def find_order_by_user_id(self, user_id):
-        
-        self.curr.execute("SELECT * FROM orders WHERE user_id='%s'" % user_id)
-        result = self.curr.fetchall()
-        self.db.commit()
+    def find_order_by_user_id(self, user_id):        
+        self.cursor.execute("SELECT * FROM orders WHERE user_id='%s'" % user_id)
+        result = self.cursor.fetchall()
+        self.store()
         return result
 

@@ -5,7 +5,7 @@ CREATE TABLE IF NOT EXISTS users (
     email VARCHAR(55) NOT NULL,
     password VARCHAR(255) NOT NULL,
     address VARCHAR(25) NOT NULL,
-    user_type boolean DEFAULT false
+    is_admin boolean DEFAULT false
 )
 """
 
@@ -51,4 +51,4 @@ CREATE TABLE IF NOT EXISTS blacklist (
 ) 
 """
 
-queries = [category_table, users_table, meals_table, orders_table, blacklist]
+queries = [users_table, category_table, meals_table, orders_table, blacklist]

@@ -29,16 +29,20 @@ class Validators(object):
 
     def username_validator(self, username):
         self.username = username
-
-        for i in username:
-            if not i.isalpha():
-                raise BadRequest("Username should not contain digits")
-            else:
-                return self.username
+        if len(username) != 0 or len(username) > 4:
+            for i in username:
+                if not i.isalpha():
+                    raise BadRequest("Username should not contain digits")
+                else:
+                    return self.username
+        else:
+            raise BadRequest("Your username is too short, a username should be a minimum of 4 characters")
 
     def number_not_negative(self, value):
         if value < 0:
             raise BadRequest("Your id is a negative number")
+        elif type(value) == int:
+            raise BadRequest("Please provide a number")
         else:
             return value
 
@@ -49,4 +53,17 @@ class Validators(object):
         else:
             items = value
             return items
+
+    def status_validator(self, status):
+        if status not in ["New", "Processing", "Cancelled","Completed"]:
+            raise BadRequest("The order status is unknown")
+        else:
+            return status
+
+    def validate_string(self, string):   
+        result = re.compile('[@_!#$%^&*()<>?/\|}{~:]')     
+        if(result.search(string) == None): 
+            return string          
+        else: 
+            raise BadRequest("A field should not contain special characters, please remove them") 
                 

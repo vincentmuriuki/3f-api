@@ -1,38 +1,33 @@
 import json
 import os
 
-from app.database import init_database, init_test_database
+from app.api.v2.models.db_vars import Database
 
-class MenuModels(object):
+class MenuModels(Database):
     """ This is the model for the menu which holds all meals """
     def __init__(self):
-        if os.getenv("CONFIG_TYPE") == "testing":
-            self.db = init_test_database()
-        else:
-            self.db = init_database()
-
-        self.curr = self.db.cursor()
-
+        super().__init__()  
+    
     def check_meal_exists(self, meal):
-        self.curr.execute("SELECT * FROM meals WHERE name='%s'" % meal)
-        result = self.curr.fetchone()
-        self.db.commit()
+        self.cursor.execute("SELECT * FROM meals WHERE name='%s'" % meal)
+        result = self.cursor.fetchone()
+        self.store()
         return result
 
     def get_menu(self):
-        self.curr = self.db.cursor()
-        self.curr.execute("SELECT * FROM meals")
-        result = self.curr.fetchall()
-        self.db.commit()
+        self.cursor.execute("SELECT * FROM meals")
+        result = self.cursor.fetchall()
+        self.store()
         return result
 
     def add_meal(self, name, description, price, category_name):
-        self.curr = self.db.cursor()
-        self.curr.execute("""
+        self.cursor.execute("""
         INSERT INTO meals (name, description, price, category_name) \
         VALUES ('%s', '%s', '%s', '%s')
         """ % (name, description, price, category_name))
-        self.db.commit()
+        self.store()
+
+    
 
     
 
