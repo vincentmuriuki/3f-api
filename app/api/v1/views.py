@@ -147,7 +147,7 @@ class OrdersManipulation(Resource):
 class LandingPage(Resource):
     """ This class handles the endpoint for the landing page """
     def get(self):        
-        return redirect("https://samerika.postman.co/collections/5317997-6cf2fe95-8670-432e-98d1-516843e55730?workspace=0cdb639d-1644-4064-8bc1-ec4e819ac9cf")
+        return redirect("https://documenter.getpostman.com/view/5317997/RWgjYgtN")
 
 
 
