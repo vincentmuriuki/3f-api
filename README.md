@@ -1,7 +1,7 @@
 # Fast Food Fast   [![Maintainability](https://api.codeclimate.com/v1/badges/a45a0bad4d14790897c1/maintainability)](https://codeclimate.com/github/tesh254/3f-api/maintainability) [![Coverage Status](https://coveralls.io/repos/github/tesh254/3f-api/badge.svg?branch=develop)](https://coveralls.io/github/tesh254/3f-api?branch=develop)          [![Build Status](https://travis-ci.org/tesh254/3f-api.svg?branch=develop)](https://travis-ci.org/tesh254/3f-api) ![python version](https://img.shields.io/pypi/pyversions/Django.svg?maxAge=2592000)
 
 
-## Installation
+## Getting started
 
 To get started with fast food api you will have clone this repo.
 
@@ -22,56 +22,35 @@ Windows:
 $ git clone https://github.com/tesh254/3f.git
 ```
 
-## Usage
+## Endpoints for v1 (memory storage version)
 
-To use this api, below is a couple of screenshots showing how to use them on postman.
+| HTTP VERB | API ROUTE | FUNCTION |
+|-----------|-----------|----------|
+|GET|`/api/v1/orders`|Get all orders|
+|POST|`/api/v1/orders`|Place an order|
+|PUT|`/api/v1/orders/<identifier>`|Update an order status|
+|DELETE|`/api/v1/orders/<identifier>`|Delete a specific order|
+|DELETE|`/api/v1/orders`|Delete all orders created|
 
-`GET all orders`
-`{{url}}/api/v1/orders`
+## NOTE:
 
-![Getting all orders](/img/getorders.png)
+In post and put http requests respond with json data
 
-As you can see the enpoint returns all orders stored.
-**Note**:This api does not request json data and always returns a `200 OK` status code even if no orders stored.
+## Endpoints for v2 (database interaction version)
 
-`POST place an order`
-`{{url}}/api/v1/orders`
-
-![Placing an order](/img/placeorder.png)
-
-To have a successfull response from the server you need to create a json body as shown then send. If an `400 Bad Request` is sent then it means there is something wrong, a field is missing. If successful, the server responds with `201 Created` status code meaning the order was placed.
-
-`GET specific order`
-`{{url}}/api/v1/orders/<identifier>`
-
-![Getting specific order](/img/getspecific.png)
-
-The server will respond with a `404 Not Found` status if the resource was not found. A `200 OK` is sent if the specific order of that identifier is found.
-
-
-`PUT update order status`
-`{{url}}/api/v1/orders`
-
-![Updating an order](/img/update.png)
-
-The reponse of the server if the order is not found is `404 Not Found`, if found `201 Created` meaning the order status was successfully created.
-
-
-`DELETE delete an order`
-`{{url}}/api/v1/orders/<identifier>`
-
-![Deleting a specific order](/img/deleteone.png)
-
-`404 Not Found` if no order of that identifier if found a `204 No Content` status is sent meaning a successful delete to check if true try the url again it will repond with `404 Not Found` status.
-
-
-`DELETE delete all orders`
-`{{url}}/api/v1/orders`
-
-![Deleting all orders](/img/deleteall.png)
-
-This endpoint clears all orders in storage the same status is sent for a succesful delete `204 No Content`.
-
+|HTTP VERB| API ROUTE | FUNCTION|USER ROLE|
+|---------|-----------|---------|---------|
+|POST|`/api/v2/auth/signup`|Signup into the site|user|
+|POST|`/api/v2/auth/login`|Login into the site|user/admin|
+|POST|`/api/v2/auth/logout`|Logout of the site|user/admin|
+|GET|`/api/v2/user/orders`|Get orders you have ordered|user|
+|GET|`/api/v2/orders`|Get all orders made by users|admin|
+|GET|`/api/v2/orders/<identifier>`|Get a specific order by id|admin|
+|PUT|`/api/v2/orders/<identifier>`|Update an order status with the id provided|admin|
+|POST|`/api/v2/menu`|Add a meal to the catalog|admin|
+|GET|`/api/v2/menu`|Get the menu|user/admin|
+|GET|`/api/v2/categories`|Get meal categories|user/admin|
+|POST|`/api/v2/categories`|Create a meal category|user/admin|
 
 ## Installing Dependencies
 
@@ -104,7 +83,8 @@ All OS:
  * v1
     * This versions data is stored in memory only if the server closes then all data is deleted.
 * v2
-    * All data in this version is stored in a postgres database(comming soon)
+    * All data in this version is stored in a postgres database
+    * User authentication.
 
 ## Meta
 
