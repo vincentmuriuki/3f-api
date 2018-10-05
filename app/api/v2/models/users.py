@@ -2,7 +2,7 @@ import os
 
 import jwt
 from werkzeug.security import generate_password_hash, check_password_hash
-from werkzeug.exceptions import BadRequest, NotFound
+from werkzeug.exceptions import BadRequest, NotFound, Unauthorized 
 
 from app.api.v2.models.db_vars import Database
 
@@ -72,6 +72,42 @@ class UserModels(Database):
         token_blacklisted = self.cursor.fetchone()
         return token_blacklisted
 
+    def check_admin_in_db(self):
+        """ This checks if an admin exists in the system """
+        self.cursor.execute("SELECT * FROM users WHERE is_admin='%s'" % True)
+        result = self.cursor.fetchall()
+        self.store()
+        if result:
+            raise Unauthorized("Admin exists, request for user role upgrade")
+        else:
+            is_admin = True
+            return is_admin
+
+    def check_role_by_email(self, email):
+        """ Check user role """
+        self.cursor.execute(
+            """
+            SELECT * FROM users WHERE email='%s'
+            """ % email
+        )
+        result = self.cursor.fetchone()
+        if result:
+            if result[5] == True:
+                return result
+            else:
+                return None
+
+    def update_user_role(self, email):
+        """ This upgrades a user role in the site """
+        self.cursor.execute(email_query % email)
+        result = self.cursor.fetchone()
+        if result:
+            self.cursor.execute("""
+                UPDATE users SET is_admin='%s' WHERE email='%s';
+            """ % (True, email))
+            return email
+        else:
+            return None
         
 
 

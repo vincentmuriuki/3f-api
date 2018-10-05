@@ -12,7 +12,7 @@ class CategoryModels(Database):
         super().__init__()
 
     def create_category(self, category_name):
-        self.cursor.execute("INSERT INTO categories (category_name) VALUES ('%s')" % (category_name))
+        self.cursor.execute("INSERT INTO categories (category_name) VALUES ('%s')" % category_name)
         self.store()
 
     def get_specific_category(self, category_name):

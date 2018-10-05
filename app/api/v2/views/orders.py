@@ -99,25 +99,30 @@ class OrdersMain(Resource):
         )
         args = parser.parse_args()
         ordered_date = dt.datetime.utcnow()
-        status = "Pending"
-        amount = args['price'] * args['qty']
+        meal = validator.validate_string(args['meal'])
+        description = validator.validate_string(args['description'])
+        if meal:
+            if description:
+                status = "New"
+                status = validator.status_validator(status)        
+                amount = args['price'] * args['qty']
+                if status:
+                    order_models.add_order(
+                        meal,
+                        args['qty'],
+                        str(ordered_date),
+                        args['price'],
+                        status,
+                        description,
+                        amount
+                    )
 
-        order_models.add_order(
-            args['meal'],
-            args['qty'],
-            str(ordered_date),
-            args['price'],
-            status,
-            args['description'],
-            amount
-        )
-
-        return (
-            {
-                "status":"Success",
-                "order":args
-            }
-        ), 201
+                    return (
+                        {
+                            "status":"Success",
+                            "order":args
+                        }
+                    ), 201
 class SingleOrders(Resource):
     """ This class will handle single orders made """
     @check_admin
@@ -149,34 +154,25 @@ class SingleOrders(Resource):
     def put(self, identifier):
         identifier = validator.number_not_negative(identifier)
         result = order_models.get_order_by_id(identifier)
+        parser = reqparse.RequestParser()
+        parser.add_argument(
+            'status',
+            type=str,
+            required=True,
+            help="Please provide a status message"
+        )
+        args = parser.parse_args()
         if result:
-            status = "Delivered"
-            delivered_date = str(dt.datetime.now())
-            order_models.update_status(identifier, status,delivered_date)
-            return (
-                {
-                    "status":"Success, Order delivered"
-                }
-            ), 201
-        else:
-            raise NotFound("Order of that identifier was not found")
+            status = args['status']
+            status = validator.status_validator(status)
+            if status:
+                delivered_date = str(dt.datetime.now())
+                order_models.update_status(identifier, status)
+                return (
+                    {
+                        "status":"Success, Order {}".format(status)
+                    }
+                ), 201
+            else:
+                raise NotFound("Order of that identifier was not found")
 
-class UserOrders(Resource):
-    """ This holds the endpoint for getting orders made by a specific user"""
-    @check_admin
-    def get(self, identifier):
-        identifier = validator.number_not_negative(identifier)
-        result = order_models.find_order_by_user_id(identifier)
-        orders = []
-        if result:
-            for u in result:
-                order = serialize.serialize_order(u)
-                orders.append(order)
-            return (
-                {
-                    "status":"Success",
-                    "order":orders
-                }
-            ), 200
-        else:
-            raise NotFound("The user has not placed any order")

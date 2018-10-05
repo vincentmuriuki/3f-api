@@ -3,7 +3,7 @@ bcrypt==3.1.4
 codecov==2.0.15
 colorama==0.3.9
 coverage==4.5.1
-coveralls==1.5.0
+coveralls==1.5.1
 flake8==3.5.0
 Flask==1.0.2
 Flask-Admin==1.5.2
@@ -11,15 +11,15 @@ Flask-API==1.0
 Flask-BasicAuth==0.2.0
 Flask-HTTPAuth==3.2.4
 Flask-JWT==0.3.2
-Flask-JWT-Extended==3.13.0
+Flask-JWT-Extended==3.13.1
 Flask-PyMongo==2.1.0
 Flask-RESTful==0.3.6
 Flask-Session==0.3.1
 get==1.0.3
 gunicorn==19.9.0
-idna==2.6
+idna==2.7
 ipdb==0.11
-Markdown==2.6.11
+Markdown==3.0.1
 mccabe==0.6.1
 public==1.0.3
 PyJWT==1.4.2

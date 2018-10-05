@@ -6,11 +6,7 @@ from app.api.v2.models.db_vars import Database
 class MenuModels(Database):
     """ This is the model for the menu which holds all meals """
     def __init__(self):
-        super().__init__()
-
-    def delete_menu_table(self):
-        """ Delete the menu of the user """
-        self.delete_table("meals")    
+        super().__init__()  
     
     def check_meal_exists(self, meal):
         self.cursor.execute("SELECT * FROM meals WHERE name='%s'" % meal)
@@ -23,6 +19,13 @@ class MenuModels(Database):
         result = self.cursor.fetchall()
         self.store()
         return result
+
+    def add_meal(self, name, description, price, category_name):
+        self.cursor.execute("""
+        INSERT INTO meals (name, description, price, category_name) \
+        VALUES ('%s', '%s', '%s', '%s')
+        """ % (name, description, price, category_name))
+        self.store()
 
     
 

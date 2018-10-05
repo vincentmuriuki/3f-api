@@ -1,4 +1,5 @@
 import os
+import datetime as dt
 
 from flask import request
 from werkzeug.exceptions import BadRequest
@@ -43,12 +44,12 @@ class OrderModels(Database):
         """ % (user_id, meal, ordered_date, price, qty, amount, status, description))
         self.store()
         
-    def update_status(self, order_id, status, delivered_date):
+    def update_status(self, order_id, status):
         """ Update an order is delivered """
         self.cursor.execute("""
-        UPDATE orders SET status='%s' AND delivered_date='%s'
-        WHERE order_id='%s'
-        """ % (status, delivered_date,order_id))
+        UPDATE orders SET status='{}'
+        WHERE order_id={}
+        """.format(str(status),int(order_id)))
         self.store()
 
     def find_order_by_user_id(self, user_id):        
