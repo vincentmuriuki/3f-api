@@ -29,7 +29,7 @@ To use this api, below is a couple of screenshots showing how to use them on pos
 `GET all orders`
 `{{url}}/api/v1/orders`
 
-![Getting all orders](img/getorders.png)
+![Getting all orders](/img/getorders.png)
 
 As you can see the enpoint returns all orders stored.
 **Note**:This api does not request json data and always returns a `200 OK` status code even if no orders stored.
@@ -37,14 +37,14 @@ As you can see the enpoint returns all orders stored.
 `POST place an order`
 `{{url}}/api/v1/orders`
 
-![Placing an order](img/placeorder.png)
+![Placing an order](/img/placeorder.png)
 
 To have a successfull response from the server you need to create a json body as shown then send. If an `400 Bad Request` is sent then it means there is something wrong, a field is missing. If successful, the server responds with `201 Created` status code meaning the order was placed.
 
 `GET specific order`
 `{{url}}/api/v1/orders/<identifier>`
 
-![Getting specific order](img/getspecific.png)
+![Getting specific order](/img/getspecific.png)
 
 The server will respond with a `404 Not Found` status if the resource was not found. A `200 OK` is sent if the specific order of that identifier is found.
 
@@ -52,7 +52,7 @@ The server will respond with a `404 Not Found` status if the resource was not fo
 `PUT update order status`
 `{{url}}/api/v1/orders`
 
-![Updating an order](img/update.png)
+![Updating an order](/img/update.png)
 
 The reponse of the server if the order is not found is `404 Not Found`, if found `201 Created` meaning the order status was successfully created.
 
@@ -60,7 +60,7 @@ The reponse of the server if the order is not found is `404 Not Found`, if found
 `DELETE delete an order`
 `{{url}}/api/v1/orders/<identifier>`
 
-![Deleting a specific order](img/deleteone.png)
+![Deleting a specific order](/img/deleteone.png)
 
 `404 Not Found` if no order of that identifier if found a `204 No Content` status is sent meaning a successful delete to check if true try the url again it will repond with `404 Not Found` status.
 
@@ -68,7 +68,7 @@ The reponse of the server if the order is not found is `404 Not Found`, if found
 `DELETE delete all orders`
 `{{url}}/api/v1/orders`
 
-![Deleting all orders](img/deleteall.png)
+![Deleting all orders](/img/deleteall.png)
 
 This endpoint clears all orders in storage the same status is sent for a succesful delete `204 No Content`.
 
