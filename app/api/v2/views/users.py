@@ -170,13 +170,13 @@ class User(Resource):
             else:
                 return (
                     {
-                        "message":"Something went wrong"
+                        "message":"You have a session problem please login"
                     }
                 ), 401
         else:
             return (
                     {
-                        "message":"Something went wrong"
+                        "message":"Please login to start a session"
                     }
                 ), 401
 

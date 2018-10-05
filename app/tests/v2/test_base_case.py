@@ -28,7 +28,6 @@ class TestBaseCase(unittest.TestCase):
         self.signup_data = {
             "username":"Mirani",
             "email":"data@fmail.com",
-            "username":"Amaza",
             "address":"Emba",
             "password":"felisha",
             "is_admin":True
@@ -36,7 +35,6 @@ class TestBaseCase(unittest.TestCase):
         self.sample_signup_data = {
             "username":"Mirani",
             "email":"data@fmail.com",
-            "username":"Amaza",
             "address":"Emba",
             "password":generate_password_hash("felisha"),
             "is_admin":True
@@ -45,21 +43,3 @@ class TestBaseCase(unittest.TestCase):
             "email":"data@fmail.com",
             "password":"felisha"
         }
-
-    def test_registration(self):
-        response = self.client.post(
-            "/api/v2/auth/signup",
-            data=json.dumps(self.signup_data),
-            content_type="application/json"
-        )
-        self.assertEqual(response.status_code, 201)
-
-    def test_login(self):
-        user_id = user_models.create_user(self.sample_signup_data)
-        response = self.client.post(
-            "/api/v2/auth/login",
-            data=json.dumps(self.login_data),
-            content_type="application/json"
-        )
-
-        self.assertEqual(response.status_code, 200)
